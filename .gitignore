@@ -8,3 +8,6 @@ checks/
 .archive/
 .reference/
 site.config.json
+
+.vercel
+.env*
