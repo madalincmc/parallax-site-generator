@@ -64,7 +64,7 @@ const roundedRect = (target: THREE.Shape | THREE.Path, w: number, h: number, r: 
 };
 
 const monoFamily = () => {
-  const family = getComputedStyle(document.documentElement).getPropertyValue("--font-body").trim();
+  const family = getComputedStyle(document.documentElement).getPropertyValue("--font-code").trim();
   return `${family ? `${family}, ` : ""}ui-monospace, Consolas, monospace`;
 };
 
@@ -144,7 +144,24 @@ function paintTests(ctx: CanvasRenderingContext2D) {
   }
 }
 
-function drawMiniWindow(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, seed: number) {
+const PROJECT_NAMES = [
+  "Video Generator",
+  "Claude LinkedIn Studio",
+  "QA Automation Playground",
+  "SnapBudget",
+  "Hardwick",
+  "Selector Generator",
+];
+
+function drawMiniWindow(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  seed: number,
+  name: string,
+) {
   const r = rng(seed);
   ctx.strokeStyle = "#5a5a60";
   ctx.lineWidth = 4;
@@ -155,9 +172,13 @@ function drawMiniWindow(ctx: CanvasRenderingContext2D, x: number, y: number, w: 
     ctx.arc(x + 28 + i * 28, y + 28, 9, 0, Math.PI * 2);
     ctx.fill();
   });
-  for (let i = 0; i < 4; i++) {
-    ctx.fillStyle = i === 0 ? COLORS.red : "#3d3d42";
-    ctx.fillRect(x + 22, y + 66 + i * 30, (w - 44) * (0.35 + r() * 0.6), 13);
+  ctx.font = `500 26px ${monoFamily()}`;
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = COLORS.red;
+  ctx.fillText(name, x + 22, y + 78);
+  for (let i = 1; i < 4; i++) {
+    ctx.fillStyle = "#3d3d42";
+    ctx.fillRect(x + 22, y + 72 + i * 42, (w - 44) * (0.35 + r() * 0.6), 13);
   }
 }
 
@@ -166,7 +187,7 @@ function paintProjects(ctx: CanvasRenderingContext2D) {
   const h = 310;
   for (let row = 0; row < 2; row++) {
     for (let col = 0; col < 3; col++) {
-      drawMiniWindow(ctx, 84 + col * (w + 54), 80 + row * (h + 54), w, h, 40 + row * 3 + col);
+      drawMiniWindow(ctx, 84 + col * (w + 54), 80 + row * (h + 54), w, h, 40 + row * 3 + col, PROJECT_NAMES[row * 3 + col]);
     }
   }
 }
@@ -175,7 +196,7 @@ function paintWriting(ctx: CanvasRenderingContext2D) {
   const r = rng(61);
   const family = getComputedStyle(document.documentElement).getPropertyValue("--font-heading").trim();
   ctx.fillStyle = "#ffffff";
-  ctx.font = `400 104px ${family ? `${family}, ` : ""}Georgia, serif`;
+  ctx.font = `700 96px ${family ? `${family}, ` : ""}system-ui, sans-serif`;
   ctx.textBaseline = "middle";
   ctx.fillText("Notes & writing", 84, 118);
   ctx.fillStyle = COLORS.red;

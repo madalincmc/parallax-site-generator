@@ -1,5 +1,5 @@
-// The numbers are tied to the object. "3 subjects" is a macro on the three lamps, and "4 kinds of
-// thing" is a wide shot with four plates lit. Then the writing plate slides out for the notes.
+// A macro on the lamps for the project count, a wide shot with the plates lit behind the tester's
+// numbers, and then the writing plate slides out for the latest post.
 import * as THREE from "three";
 import { segment, track } from "@/stage/kit";
 import type { ActFactory, Vec3 } from "@/stage/types";

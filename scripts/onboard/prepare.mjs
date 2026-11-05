@@ -27,10 +27,15 @@ export function prepareNewSite() {
     mkdirSync(join(ROOT, archived), { recursive: true });
     cpSync(join(ROOT, "src/site"), join(ROOT, archived, "site"), { recursive: true });
     cpSync(join(ROOT, "src/sections"), join(ROOT, archived, "sections"), { recursive: true });
+    if (existsSync(join(ROOT, "content"))) cpSync(join(ROOT, "content"), join(ROOT, archived, "content"), { recursive: true });
+    const images = join(ROOT, "public/images");
+    if (existsSync(images)) cpSync(images, join(ROOT, archived, "images"), { recursive: true });
   }
   for (const part of ["site", "sections"]) {
     rmSync(join(ROOT, "src", part), { recursive: true, force: true });
     cpSync(join(STARTER, part), join(ROOT, "src", part), { recursive: true });
   }
+  rmSync(join(ROOT, "content"), { recursive: true, force: true });
+  rmSync(join(ROOT, "public/images"), { recursive: true, force: true });
   return archived;
 }

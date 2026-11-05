@@ -1,0 +1,253 @@
+---
+title: Your first lawsuit might arrive before your first subscriber
+description: Shipping an app is easy now. What to check before launch, and what you owe users after it — data access and deletion, refunds, and a clean shutdown.
+category: Engineering
+tags:
+  - security
+  - privacy
+  - gdpr
+  - vibe-coding
+coverImage:
+  path: "/images/blog/audit-before-you-ship/cover.png"
+  width: 1200
+  height: 630
+publishedAt: 2026-10-26
+draft: false
+---
+
+Building software and putting it online is easier than it has ever been. A weekend, an AI
+assistant and a free hosting tier are enough to get a working product in front of real people.
+Thinking about the consequences of publishing hasn't kept up. Lately I've come across several
+apps and SaaS products missing the basics: no terms and conditions, no privacy policy, no word
+on what happens to the data people type in.
+
+This post is the longer version of a short note I wrote on LinkedIn. It's for two audiences:
+people who use these apps, and people who build them.
+
+## Shipping got easy, accountability didn't
+
+The tools removed most of the friction between an idea and a public URL. What they didn't
+remove is the fact that the moment strangers can sign up, you are handling other people's data
+— and that comes with obligations whether or not you thought about them.
+
+A privacy policy and terms of service are not paperwork for big companies. They are where you
+tell people what you collect, why, how long you keep it and who else gets it, and where you set
+the rules for using what you built. Without them, you have made no promises — which sounds
+safe, but in practice means you can't show you handled anything correctly, and you've given
+users nothing to agree to.
+
+Some platforms won't even let you skip this. If your app uses "Sign in with Google", Google's
+[verification requirements](https://support.google.com/cloud/answer/13464321) ask for a privacy
+policy linked from your homepage and from the consent screen, describing how you access, use,
+store and share Google user data.
+
+## If you're a user: read before you type
+
+When nobody tells you how your information is handled, you can't know what is kept, for how
+long, or who else gets to see it. Not everything online today has been tested or meets minimum
+protection standards.
+
+A few habits that cost nothing:
+
+- **Look for the privacy policy before you sign up.** No policy, or a generic template that
+  doesn't mention the app's actual features, is a signal.
+- **Give the minimum.** If a budgeting tool asks for your ID number, or a note-taking app wants
+  your contacts, ask why.
+- **Be careful with uploads.** Photos, receipts and documents carry more than you think —
+  addresses, names, account numbers, sometimes location data in the file itself.
+- **Use separate credentials.** A new app with an unknown security record should never get a
+  password you use anywhere else.
+
+## If you're a builder: five questions before launch
+
+If you vibe coded something and decided to make it public, audit it before launch. Not a
+formal certification — an honest hour with five questions.
+
+![Five pre-launch questions in sequence: what you collect, where it is stored, who has access, which laws apply, and how it holds up under attack, leading to a launch with a privacy policy and terms that match the answers](/images/blog/audit-before-you-ship/five-questions.svg "Answer these before the first user signs up")
+
+### 1. What does it collect, and do you need all of it?
+
+List every field in every form, every file upload, every analytics event and every third-party
+script. For each one, write down why you need it. Anything without a reason should go — data
+you never collect is data you can never leak.
+
+### 2. Where is it stored?
+
+Database, file storage, logs, email provider, error tracker, analytics. Personal data tends to
+end up in more places than the one you designed for. Logs and error reports are the usual
+surprise: a full request body with an email address in it is personal data too.
+
+### 3. Who has access?
+
+Check it from three sides. Which people can open the database or dashboard? Which services hold
+keys, and are those keys only on the server? And which users can read which rows — is that
+enforced by the database, or only by the UI hiding a button?
+
+On [SnapBudget](/projects/snapbudget), an expense tracker where a household shares its
+spending, I put that last rule in Postgres with row-level security on every table, so a member
+can only read what their household grants them regardless of what the client asks for. The
+service-account key for receipt OCR is only used from a server route and never reaches the
+browser.
+
+### 4. Which laws apply to you and to your users?
+
+This is the one builders skip most, because it feels like someone else's job. It isn't. The
+EU's GDPR is a good example of why: under
+[Article 3](https://gdpr-info.eu/art-3-gdpr/) it applies to anyone offering goods or services
+to people in the EU — whether or not they pay — even if you're based outside the EU.
+[Article 13](https://gdpr-info.eu/art-13-gdpr/) then lists what you must tell people when you
+collect their data: who you are, the purpose and legal basis, who receives it, how long you keep
+it, and what rights they have. That list is, more or less, the outline of a privacy policy.
+
+Your users' location matters as much as yours. Check the rules where they live, and anything
+specific to your domain — health, finance and children's data come with stricter ones.
+
+### 5. How would it hold up if someone tried to break it?
+
+Assume someone will try. Check that every endpoint requires the access it should, that inputs
+are validated on the server, that sign-up and contact forms can't be used to send spam, and that
+no secrets live in your repository or its history. Then remove whatever you aren't using: an
+unused endpoint is still a public endpoint.
+
+## What this looked like on my own site
+
+Before publishing my earlier portfolio site, I ran the same checklist on it. It's a small, mostly static
+site, and it still turned something up: an API route for a contact form I had built and never
+put on any page. Nobody could see the form, but the endpoint was deployed and reachable. I
+deleted it, along with its dependencies and the third-party origins it needed in the content
+security policy.
+
+The rest of the hour went to checking that no keys were committed, that environment files were
+ignored, that the screenshots contained only demo data and no location metadata, and that the
+security headers were in place. None of it was hard. All of it was easy to skip.
+
+## After launch: what you owe the people using it
+
+The audit gets you to launch day. Running a public product adds obligations that don't show up
+until a user asks for something — and by then you need to already have an answer. Four come up
+again and again: giving people their data, deleting it, refunding them, and what happens when
+you shut the product down.
+
+![The obligations across a product's life: at launch a privacy policy, terms and refund policy; while running, access, export and deletion requests answered within one month; when charging, a 14-day withdrawal right and refunds within 14 days; at shutdown, advance notice, an export window, refunds for unused time and deletion of all data](/images/blog/audit-before-you-ship/obligations.svg "What you owe users, from launch to shutdown — EU rules as the reference point")
+
+The rules below are the EU's, because that's where I build and because they are among the most
+detailed. Other places have their own versions — California's privacy law, for example, also
+gives people the right to know what's collected and to have it deleted. The shape of the work
+is the same everywhere.
+
+### Let people get their data
+
+Under the GDPR, anyone can ask whether you hold data about them and get a copy of it
+([Article 15](https://gdpr-info.eu/art-15-gdpr/)), along with what you use it for, who you
+share it with and how long you keep it. Where they gave you the data under a contract or with
+their consent, they can also ask for it in a "structured, commonly used and machine-readable
+format" so they can take it elsewhere ([Article 20](https://gdpr-info.eu/art-20-gdpr/)).
+
+You have one month to respond, extendable by two more for complex cases if you tell the person
+why within the first month, and it has to be free unless requests are clearly excessive
+([Article 12](https://gdpr-info.eu/art-12-gdpr/)).
+
+What that means in practice:
+
+- **Know where everything is.** The data map from question 2 above is what makes an export
+  possible. If you can't list every table and service holding a user's data, you can't answer.
+- **Build the export once.** A JSON or CSV download of everything tied to an account, behind a
+  button in the settings page, turns a stressful manual job into a non-event.
+- **Publish a contact for privacy requests** in your privacy policy, and check it.
+
+### Let people delete their data
+
+People can also ask you to erase their data — when you no longer need it, when they withdraw
+consent, or when it was processed unlawfully
+([Article 17](https://gdpr-info.eu/art-17-gdpr/)). There are exceptions: you can keep what the
+law requires you to keep, such as invoices for tax purposes, or what you need to defend a legal
+claim. Everything else goes, without undue delay.
+
+"Delete" is where most side projects fall short, because data spreads:
+
+- **The main database** — including rows in other tables that reference the user.
+- **File storage** — uploaded images and documents, not just the database row pointing to them.
+- **Third-party services** — email provider, analytics, payment provider, error tracker. Each one
+  holds its own copy and has its own deletion process.
+- **Backups and logs** — decide how long they live, write it in the privacy policy, and let them
+  expire on schedule rather than keeping them forever.
+
+A "Delete my account" button that actually removes all of this is the cleanest answer. If
+deletion is manual, write the steps down so it's done the same way every time.
+
+### If you take money: refunds
+
+Selling online to consumers in the EU comes with a 14-day right of withdrawal for distance
+contracts: the buyer can change their mind without giving a reason. If you never told them
+about that right, the window doesn't close after 14 days — it extends by
+[12 months](https://www.legislation.gov.uk/eudr/2011/83/article/10). When someone withdraws, you
+have [14 days](https://www.legislation.gov.uk/eudr/2011/83/article/13) to refund them.
+
+Digital products have an exception, but only if you set it up properly. The right of withdrawal
+doesn't apply to digital content once delivery has started, provided the buyer gave
+[prior express consent and acknowledged](https://www.legislation.gov.uk/eudr/2011/83/article/16)
+that they lose the right — and you confirm that afterwards on a durable medium, such as an email
+receipt. A pre-ticked checkbox doesn't count.
+
+So before you add a "Buy" button:
+
+- **Write a refund policy** and link it from the checkout, not just the footer.
+- **Collect the consent explicitly** if you rely on the digital-content exception, and include
+  it in the receipt.
+- **Make refunds easy to request.** If the only way to get money back is through the bank, people
+  will use chargebacks — which cost you a fee each time and count against you with your payment
+  provider.
+- **Consider a merchant of record** — a payment platform that sells on your behalf and handles
+  VAT, invoices and refunds as the legal seller — if you don't want to run that side yourself.
+
+### When you shut it down
+
+Side projects end. That's normal — leaving users stranded isn't. Closing a product that people
+pay for or keep data in is a process, not a switch:
+
+1. **Announce it early.** Tell users by email, with a banner in the app, and on the website.
+   For a paid product, give at least as much notice as one billing cycle; more is better.
+2. **Stop new sign-ups and renewals** the day you announce, so nobody pays for something that's
+   ending.
+3. **Open an export window.** Give people time and a simple way to download what they put in.
+   For paid digital services in the EU, content users created has to be returned on request,
+   free of charge, within a reasonable time and in a commonly used, machine-readable format
+   ([Digital Content Directive, Article 16](https://www.legislation.gov.uk/eudr/2019/770/article/16)).
+4. **Refund unused prepaid time.** Keeping a year's subscription for a service that disappears
+   in month three is hard to defend to a customer, a payment provider or a court.
+5. **Delete everything at the end** — database, storage, third-party copies, backups — and
+   close the accounts with the services that held data on your behalf.
+
+The same thinking applies to big changes short of closing. In the EU, if you change a paid
+digital service in a way that makes it worse for users, you have to tell them in advance, and
+they can cancel free of charge within 30 days
+([Article 19](https://www.legislation.gov.uk/eudr/2019/770/article/19)).
+
+None of this works unless you can reach your users. Keep a verified email for every account,
+say in your terms that service notices go there, and don't let that list become marketing
+you'd be tempted to stop sending.
+
+## Why it matters before the first subscriber
+
+GDPR fines go up to €20 million or 4% of worldwide annual turnover, whichever is higher, for
+the most serious breaches ([Article 83](https://gdpr-info.eu/art-83-gdpr/)). A side project will
+not see numbers like that, but it doesn't need to — a single complaint, a data-access request
+you can't answer, or a leaked table of user emails is enough to turn a hobby into a legal and
+reputational problem.
+
+These questions are easy to skip when all your focus is on getting the product to work, and
+that's how you end up in disputes you never saw coming.
+
+_I'm an engineer, not a lawyer — treat this as a checklist for the right questions, and get
+proper legal advice for the answers that apply to your product._
+
+## Takeaways
+
+- Before launch, write down what you collect, where it's stored, who can access it, which laws
+  apply, and how it could be attacked.
+- Publish a privacy policy and terms that describe what your app actually does — not a template.
+- Build data export and account deletion before someone asks; you'll have a month to answer.
+- If you charge, write a refund policy, and handle the 14-day withdrawal right on purpose.
+- Plan the ending: notice, export window, refunds for unused time, then delete everything.
+- Your idea might be great, and you might already have a plan to monetize it. Just keep in mind
+  you could get your first lawsuit before your first subscription.

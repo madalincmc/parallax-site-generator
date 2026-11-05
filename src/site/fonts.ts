@@ -1,8 +1,10 @@
 // next/font downloads these at build time and serves them from this site, so nothing loads from
 // another origin at runtime. Keep the two CSS variable names; globals.css depends on them.
-import { Instrument_Serif, JetBrains_Mono } from "next/font/google";
+// The same three families as Madalin's existing site. --font-code is the terminal's mono.
+import { Archivo, Geist_Mono, Space_Grotesk } from "next/font/google";
 
-const body = JetBrains_Mono({ subsets: ["latin"], variable: "--font-body" });
-const heading = Instrument_Serif({ subsets: ["latin"], weight: "400", variable: "--font-heading" });
+const body = Archivo({ subsets: ["latin"], variable: "--font-body" });
+const heading = Space_Grotesk({ subsets: ["latin"], variable: "--font-heading" });
+const code = Geist_Mono({ subsets: ["latin"], variable: "--font-code" });
 
-export const fontClasses = `${body.variable} ${heading.variable}`;
+export const fontClasses = `${body.variable} ${heading.variable} ${code.variable}`;

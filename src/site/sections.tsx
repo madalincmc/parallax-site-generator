@@ -7,11 +7,11 @@ import Proof from "@/sections/proof/section";
 import Statement from "@/sections/statement/section";
 import Story from "@/sections/story/section";
 
-export const sections: { slug: string; label: string; Component: ComponentType }[] = [
+export const sections: { slug: string; label: string; anchor?: string; Component: ComponentType }[] = [
   { slug: "hero", label: "Start", Component: Hero },
   { slug: "story", label: "Inside", Component: Story },
   { slug: "statement", label: "On the side", Component: Statement },
   { slug: "features", label: "Projects", Component: Features },
-  { slug: "proof", label: "Writing", Component: Proof },
-  { slug: "closer", label: "Contact", Component: Closer },
+  { slug: "proof", label: "Proof", Component: Proof },
+  { slug: "closer", label: "Contact", anchor: "contact", Component: Closer },
 ];

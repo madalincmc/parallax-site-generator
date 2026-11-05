@@ -1,0 +1,94 @@
+---
+title: Video Generator
+description: Type a prompt and get an MP4 video or a live website animation. Claude Code writes the three.js scene and checks its own frames, at no cost beyond your existing subscription.
+category: AI
+technologies:
+  - three.js
+  - WebGL
+  - Claude Code
+  - Node.js
+  - Puppeteer
+  - ffmpeg
+  - esbuild
+coverImage:
+  path: "/images/projects/video-generator/cover.png"
+  width: 1600
+  height: 1000
+gallery:
+  - path: "/images/projects/video-generator/workflow.png"
+    alt: "Workflow: describe it, Claude writes a scene, checks rendered frames and fixes the code, then builds a video or a live website animation"
+    width: 1600
+    height: 800
+  - path: "/images/projects/video-generator/self-review.jpg"
+    alt: "The 12-frame contact sheet Claude reviewed for the balloon video, with the sky moving from violet to gold"
+    width: 1920
+    height: 810
+  - path: "/images/projects/video-generator/hero-checks.jpg"
+    alt: "The contact sheet for the dot wave animation, in dark theme, light theme and phone width, including a frame from after an hour on screen"
+    width: 1920
+    height: 672
+  - path: "/images/projects/video-generator/live-header.png"
+    alt: "The dot wave running behind the homepage header of my earlier portfolio site"
+    width: 1440
+    height: 900
+publishedAt: 2026-11-03
+---
+
+Type a prompt and get either an MP4 video or a live animation for a website. There are no image or video models, extra API keys or stock assets involved: Claude Code writes every scene as three.js code, and your own GPU does the rendering.
+
+The main strength is what it doesn't need. You use only what you already have, Claude Code and your own machine, so there's no additional cost. It was built and measured on a basic Claude Code subscription, and the wave in the header of my earlier portfolio site was its first real use.
+
+## Two separate outputs
+
+**MP4 video** (`npm run video`) gives you a file to post, share or edit, such as social clips and shorts. It runs once on your machine, and viewers just watch the file.
+
+**Live website animation** (`npm run hero`) gives you one JavaScript file containing the scene and three.js. It runs on each visitor's GPU, so it stays sharp at any size, follows the page's light or dark theme, and can react to the cursor.
+
+## How the skills work
+
+A skill is a set of written instructions that Claude Code follows when you call it. There's one for each output, `/video` and `/hero`. You can run either from the terminal for a single generation, or inside Claude Code to keep asking for changes.
+
+Both follow the same idea, with Claude reviewing its own work before finishing:
+
+- **Plan**: choose the format, palette and motion
+- **Write**: create the whole scene as three.js code, with nothing downloaded
+- **Check**: render sample frames, look at them, and fix the code, for up to three rounds
+- **Finish**: produce the final output and report anything it couldn't achieve
+
+They differ in what they check and how they finish.
+
+`/video` asks whether the subject is recognizable, well framed and reaches an ending. Then headless Chrome draws every frame on the GPU, and ffmpeg encodes the MP4. An 8-second 1080p clip renders in about 10 seconds on a laptop with an RTX 4050, and renders of the same scene came out byte-identical.
+
+`/hero` asks whether text stays readable in dark, light and phone views, and after an hour on screen. The build also has to pass these checks, measured on a laptop's integrated GPU rather than the fast one:
+
+- **Speed**: a median frame under 12 ms at 1080p. The wave on my earlier portfolio site takes 1.3 ms
+- **Size**: under 250 KB gzipped, including three.js. The wave is 134 KB
+- **Transparency**: the page has to show through, with no more than half the frame fully opaque
+- **Long sessions**: it has to look the same after an hour, which catches anything that drifts over time
+- **Security**: it's tested under a strict Content Security Policy, which catches anything a locked-down site would block
+
+On the page, the animation resizes with its container, pauses when off-screen, shows a still frame for visitors who prefer reduced motion, and lowers its resolution on slow devices. If WebGL isn't available, it does nothing and the page stays as it was.
+
+## What it costs
+
+**No additional cost.** There's no extra AI service, image or video model, API key, or per-video charge. Generating draws on the usage your Claude Code plan already includes, and everything after that uses no Claude at all:
+
+- **Generating an MP4 video**: about 1.4 to 1.6 million tokens and 7 to 8 minutes in the two runs measured
+- **Generating a live animation**: about 0.4 to 0.9 million tokens and 2 to 3.5 minutes in the two runs measured
+- **Re-rendering or rebuilding an existing scene**: your machine only
+- **Visitors viewing a live animation**: no AI involved, just your normal hosting
+
+On the basic subscription, one video used an estimated 10 to 13% of a session limit and about 1% of the weekly limit, so roughly 7 to 10 similar videos fit in a session window. Most of those tokens are cached context, which counts for far less than new work. These are a handful of measured runs rather than an average, so results vary by prompt.
+
+## Limitations
+
+- **Stylized, not photorealistic**: everything is procedural 3D, so real people or live footage become an interpretation
+- **No sound**: videos are silent for now
+- **Reviewed by stills**: Claude checks sampled frames rather than playback, so motion is worth checking by eye
+- **Tested on Windows only**: and live animations haven't been measured on real phones
+
+## Use cases
+
+- Short clips for social media, without paying for a video model
+- Animated website headers that follow the page's light or dark theme
+- Trying out visual ideas quickly, then editing the generated scene code by hand

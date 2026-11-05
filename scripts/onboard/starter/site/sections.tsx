@@ -3,7 +3,7 @@ import type { ComponentType } from "react";
 import Closer from "@/sections/closer/section";
 import Hero from "@/sections/hero/section";
 
-export const sections: { slug: string; label: string; Component: ComponentType }[] = [
+export const sections: { slug: string; label: string; anchor?: string; Component: ComponentType }[] = [
   { slug: "hero", label: "Start", Component: Hero },
   { slug: "closer", label: "End", Component: Closer },
 ];

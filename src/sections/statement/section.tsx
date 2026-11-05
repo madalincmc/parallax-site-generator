@@ -14,14 +14,14 @@ export default function Statement() {
           <div
             aria-hidden
             data-bleed
-            className="font-display w-max pl-[5vw] text-[clamp(4rem,16vw,16rem)] leading-none tracking-tight whitespace-nowrap"
-            style={{ transform: "translateX(calc(var(--p) * -58%))" }}
+            className="font-display w-max pl-[5vw] text-[clamp(4rem,16vw,16rem)] leading-none font-bold tracking-tight whitespace-nowrap"
+            style={{ transform: "translateX(calc(var(--p) * -78%))" }}
           >
-            Things I built outside work.
+            It usually starts with a problem I ran into.
           </div>
         </Depth>
-        <h2 className="font-display max-w-md self-end text-right text-[clamp(1.5rem,2.4vw,2.5rem)] leading-tight font-normal tracking-tight [.motion_&]:text-[clamp(1.25rem,1.8vw,1.75rem)]">
-          <Words text="Things I built outside work." />
+        <h2 className="font-display max-w-md self-end text-right text-[clamp(1.5rem,2.4vw,2.5rem)] leading-tight font-bold tracking-tight [.motion_&]:text-[clamp(1.25rem,1.8vw,1.75rem)]">
+          <Words text="It usually starts with a problem I ran into." />
         </h2>
       </Beat>
     </Section>

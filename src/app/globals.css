@@ -8,6 +8,7 @@
   --color-accent: var(--accent);
   --font-sans: var(--font-body);
   --font-display: var(--font-heading);
+  --font-mono: var(--font-code, ui-monospace), ui-monospace, monospace;
 }
 
 /* The page color shows through until the stage starts, and stays if it never does. */
@@ -156,4 +157,108 @@ body {
 .chapters a:hover,
 .chapters a:focus-visible {
   opacity: 1;
+}
+
+/* Markdown on the project and blog pages. */
+.prose {
+  max-width: 44rem;
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--ink) 86%, transparent);
+}
+
+.prose > * + * {
+  margin-top: 1.1em;
+}
+
+.prose :is(h2, h3) {
+  margin-top: 2.2em;
+  color: var(--ink);
+  font-family: var(--font-heading), system-ui, sans-serif;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.prose h2 {
+  font-size: 1.75rem;
+}
+
+.prose h3 {
+  font-size: 1.25rem;
+}
+
+.prose :is(ul, ol) {
+  padding-left: 1.25em;
+}
+
+.prose ul {
+  list-style: disc;
+}
+
+.prose ol {
+  list-style: decimal;
+}
+
+.prose li + li {
+  margin-top: 0.5em;
+}
+
+.prose li::marker {
+  color: var(--accent);
+}
+
+.prose strong {
+  color: var(--ink);
+}
+
+.prose a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 3px;
+}
+
+.prose code {
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--ink) 10%, transparent);
+  font-family: var(--font-code), ui-monospace, monospace;
+  font-size: 0.875em;
+  overflow-wrap: anywhere;
+}
+
+.prose pre {
+  overflow-x: auto;
+  padding: 1em;
+  border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  border-radius: 8px;
+}
+
+.prose pre code {
+  padding: 0;
+  background: none;
+}
+
+.prose img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.prose blockquote {
+  padding-left: 1em;
+  border-left: 2px solid var(--accent);
+}
+
+.prose table {
+  display: block;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.prose :is(th, td) {
+  padding: 0.5em 0.75em;
+  border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+  text-align: left;
 }
