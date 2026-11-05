@@ -1,6 +1,6 @@
 // Beats:
 // p 0.00-0.17  The closed window floats apart along Z while the camera swings low and wide.
-//              "Under the prompt." The stack of five plates is revealed.
+//              "What I do." The stack of five plates is revealed.
 // p 0.20-0.38  The teams plate slides out to the right, an org tree in amber. Text left.
 // p 0.40-0.58  The tests plate slides out to the left, rows of green ticks. Text right.
 // p 0.60-0.78  The projects plate slides out to the right, close up. Caption along the bottom.

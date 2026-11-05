@@ -7,7 +7,7 @@ import { TerminalBar } from "../window";
 
 export const metadata: Metadata = {
   title: `Blog | ${brief.name}`,
-  description: "Notes on what I learn leading teams, testing software and building side projects.",
+  description: "Notes on engineering, testing and building products.",
 };
 
 export default function BlogPage() {
@@ -16,7 +16,7 @@ export default function BlogPage() {
     <>
       <TerminalBar path="~/portfolio/blog" command="ls --newest-first" />
       <h1 className="font-display mt-10 text-[clamp(3rem,8vw,6rem)] leading-none font-bold tracking-tight">Blog</h1>
-      <p className="text-muted mt-4 max-w-xl leading-relaxed">What I learn along the way, written down so it sticks.</p>
+      <p className="text-muted mt-4 max-w-xl leading-relaxed">Notes on engineering, testing and building products.</p>
       <ul className="mt-12 border-b border-white/10">
         {posts.map((post) => (
           <li key={post.slug} className="border-t border-white/10">

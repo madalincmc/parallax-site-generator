@@ -9,34 +9,34 @@ const LABEL = "text-muted font-mono text-xs tracking-widest uppercase";
 export default function Proof() {
   const latest = getPosts()[0];
   return (
-    <Section slug="proof" length={4} label="Proof">
+    <Section slug="proof" length={4} label="Highlights">
       <Beat from={0} to={0.3} className="justify-end md:items-end md:justify-center">
         <div className="md:max-w-[min(40vw,34rem)]">
           <p className={FIGURE}>{getProjects().length}</p>
           <h2 className="font-display mt-6 text-[clamp(2.25rem,4vw,4.5rem)] leading-none font-bold tracking-tight">
-            <Words text="Side projects so far" />
+            <Words text="Side projects built" />
           </h2>
           <p className="text-muted mt-4 text-sm leading-relaxed">
-            They usually start from a problem I ran into myself, not from a technology I wanted to try.
+            From test tooling to AI experiments, a live expense tracker and a furniture workshop&rsquo;s website.
           </p>
         </div>
       </Beat>
 
       <Beat from={0.36} to={0.64} className="justify-end md:items-end md:justify-center">
         <div className="md:max-w-[min(38vw,30rem)]">
-          <p className={LABEL}>The tester in me, in numbers</p>
+          <p className={LABEL}>Test tooling in numbers</p>
           <div className="mt-5 grid gap-5">
             <div>
               <p className={STAT}>8</p>
-              <p className="mt-2 text-sm leading-snug">locator strategies per element in the selector extension</p>
+              <p className="mt-2 text-sm leading-snug">locator strategies per element in the Web Element Selector Generator</p>
             </div>
             <div>
               <p className={STAT}>~280</p>
-              <p className="mt-2 text-sm leading-snug">test hooks in the QA playground, with some left out on purpose</p>
+              <p className="mt-2 text-sm leading-snug">test hooks in the QA Automation Playground, with some omitted on purpose</p>
             </div>
             <div>
               <p className={STAT}>20%</p>
-              <p className="mt-2 text-sm leading-snug">of its simulated AJAX requests fail, so your tests have to cope</p>
+              <p className="mt-2 text-sm leading-snug">of its simulated AJAX requests fail by design, to test how suites handle flakiness</p>
             </div>
           </div>
         </div>

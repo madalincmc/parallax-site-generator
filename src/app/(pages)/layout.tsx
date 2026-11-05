@@ -32,7 +32,7 @@ export default function PagesLayout({ children }: { children: React.ReactNode })
         <div className="text-muted mx-auto flex max-w-5xl flex-wrap justify-between gap-x-6 gap-y-2 px-5 py-6 text-xs md:px-8">
           <p>{brief.name}</p>
           <a href="/" className={NAV}>
-            Back to the 3D home page
+            Back to home
           </a>
         </div>
       </footer>

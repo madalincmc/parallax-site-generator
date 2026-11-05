@@ -2,7 +2,7 @@ import { Beat, Depth, Section, Words } from "@/stage/dom";
 
 export default function Hero() {
   return (
-    <Section slug="hero" length={3.5} label="Start">
+    <Section slug="hero" length={3.5} label="Intro">
       <Beat from={0} to={0.36} className="justify-stretch">
         <h1 className="font-display flex flex-1 flex-col pt-3 justify-between text-[clamp(4.25rem,11vw,12rem)] leading-[0.9] font-bold tracking-tight">
           <span className="self-start">

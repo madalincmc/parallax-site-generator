@@ -17,7 +17,7 @@ export default function ProjectsPage() {
       <TerminalBar path="~/portfolio/projects" command="ls --newest-first" />
       <h1 className="font-display mt-10 text-[clamp(3rem,8vw,6rem)] leading-none font-bold tracking-tight">Projects</h1>
       <p className="text-muted mt-4 max-w-xl leading-relaxed">
-        Things I built outside work. They usually start from a problem I ran into myself, not from a technology I wanted
+        Projects I&rsquo;ve built outside work. Most start from a problem I ran into myself, not from a technology I wanted
         to try.
       </p>
       <ul className="mt-12 border-b border-white/10">

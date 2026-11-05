@@ -12,8 +12,8 @@ export default function Closer() {
             <Words text="Get in touch." />
           </h2>
           <p className="text-muted mt-4 max-w-lg text-sm leading-relaxed">
-            Questions, feedback on a project, or want to talk about engineering, testing or AI?
-            Email or LinkedIn works best.
+            For questions, feedback on a project, or a conversation about engineering, testing or AI, email or LinkedIn
+          works best.
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
             <a

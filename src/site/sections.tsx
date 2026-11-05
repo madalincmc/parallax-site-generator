@@ -8,10 +8,10 @@ import Statement from "@/sections/statement/section";
 import Story from "@/sections/story/section";
 
 export const sections: { slug: string; label: string; anchor?: string; Component: ComponentType }[] = [
-  { slug: "hero", label: "Start", Component: Hero },
-  { slug: "story", label: "Inside", Component: Story },
-  { slug: "statement", label: "On the side", Component: Statement },
+  { slug: "hero", label: "Intro", Component: Hero },
+  { slug: "story", label: "About", Component: Story },
+  { slug: "statement", label: "Approach", Component: Statement },
   { slug: "features", label: "Projects", Component: Features },
-  { slug: "proof", label: "Proof", Component: Proof },
+  { slug: "proof", label: "Highlights", Component: Proof },
   { slug: "closer", label: "Contact", anchor: "contact", Component: Closer },
 ];
