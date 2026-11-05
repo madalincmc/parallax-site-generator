@@ -3,7 +3,7 @@ import { Beat, Depth, Section, Words } from "@/stage/dom";
 export default function Statement() {
   return (
     <Section slug="statement" length={2.5} tone="light" label="On the side">
-      <Beat from={0} to={1} className="justify-end">
+      <Beat from={0} to={0.95} className="justify-end">
         {/* The ghost word and the running line only exist where scrolling moves them. */}
         <Depth speed={0.3} className="absolute top-[30svh] left-[4vw] hidden [.motion_&]:block">
           <div aria-hidden data-bleed className="font-display text-[clamp(8rem,30vw,32rem)] leading-none whitespace-nowrap opacity-[0.05]">

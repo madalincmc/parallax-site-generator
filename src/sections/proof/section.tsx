@@ -42,8 +42,8 @@ export default function Proof() {
         </div>
       </Beat>
 
-      <Beat from={0.7} to={1} className="justify-end md:justify-center">
-        <Depth speed={0.04} className="md:max-w-[min(36vw,30rem)]">
+      <Beat from={0.7} to={0.95} className="justify-end md:justify-center">
+        <Depth speed={0.04} className="bg-bg/80 border border-white/10 p-6 backdrop-blur-xl md:max-w-[min(38vw,32rem)] md:p-8">
           <p className={LABEL}>Latest post</p>
           <h3 className="font-display mt-3 text-[clamp(1.75rem,3vw,3rem)] leading-tight font-bold tracking-tight">
             <Link href={`/blog/${latest.slug}`} className="underline-offset-4 hover:underline">

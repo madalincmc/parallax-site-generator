@@ -20,7 +20,7 @@ export default function Hero() {
           <p className="text-accent mt-1">Scroll</p>
         </div>
       </Beat>
-      <Beat from={0.4} to={1} className="justify-end">
+      <Beat from={0.4} to={0.95} className="justify-end">
         <Depth speed={-0.08}>
           <h2 className="font-display max-w-5xl text-[clamp(2.25rem,5vw,5.5rem)] leading-[1.02] font-bold tracking-tight">
             <Words text="I lead teams and build things on the side." />

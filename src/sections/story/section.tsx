@@ -46,7 +46,7 @@ export default function Story() {
         </div>
       </Beat>
 
-      <Beat from={0.8} to={1} fade={0.025}className="justify-end md:items-end md:justify-center md:text-right">
+      <Beat from={0.8} to={0.97} fade={0.025}className="justify-end md:items-end md:justify-center md:text-right">
         <Depth speed={0.06} className="md:max-w-[min(32vw,26rem)]">
           <p className={NUMBER}>04</p>
           <h3 className={TITLE}>

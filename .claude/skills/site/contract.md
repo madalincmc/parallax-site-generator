@@ -72,6 +72,8 @@ export default function Example() {
   - **Spec:** large figures in a row with small labels
   - **Diagonal:** two pieces of text in opposite corners, with the subject in the middle
 - The chapter menu sits in the band above the beats' top padding, so keep pinned text out of it.
+- A pinned section scrolls away for one screen before the next one arrives, and text still showing rides
+  up through the menu. End a section's last beat at about `to={0.95}`, except on the page's final section.
 - Mark oversized type that bleeds off screen on purpose with `data-bleed` on a wrapper. The check
   otherwise fails text that runs off the screen.
 - Use the tokens `text-ink`, `text-muted`, `text-accent`, `bg-bg` and `font-display`. Don't invent

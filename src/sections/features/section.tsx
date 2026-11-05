@@ -61,7 +61,7 @@ export default function Features() {
         </div>
       </Beat>
 
-      <Beat from={0.67} to={1} className="justify-end">
+      <Beat from={0.67} to={0.95} className="justify-end">
         <div className={`${PANEL} grid gap-6 md:grid-cols-[1fr_1.4fr]`}>
           <div>
             <p className={LABEL}>Live</p>
