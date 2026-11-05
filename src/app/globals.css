@@ -1,0 +1,159 @@
+@import "tailwindcss";
+@import "../site/theme.css";
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-heading);
+}
+
+/* The page color shows through until the stage starts, and stays if it never does. */
+html {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+body {
+  background: transparent;
+  overflow-x: clip;
+  font-family: var(--font-body), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.stage {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  height: 100lvh;
+  pointer-events: none;
+}
+
+[data-tone="light"] {
+  color: var(--ink-on-light);
+}
+
+[data-tone="dark"] {
+  color: var(--ink-on-dark);
+}
+
+/*
+ * The default below is a plain document, used with no JavaScript and with reduced motion. Everything
+ * pinned, absolutely placed or hidden until scrolled must live under .motion, or that text is lost.
+ */
+.section {
+  position: relative;
+  padding-block: 12svh;
+  padding-inline: clamp(1.25rem, 5vw, 5rem);
+}
+
+.beat {
+  padding-block: 1.5rem;
+}
+
+.motion .section-pinned {
+  height: calc(var(--length) * 100svh);
+  padding: 0;
+}
+
+.motion .section-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: clip;
+}
+
+.motion .section-pinned .beat {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(5rem, 11svh, 7rem) clamp(1.25rem, 5vw, 5rem);
+  will-change: opacity, transform;
+  pointer-events: none;
+}
+
+.motion .section-pinned .beat :is(a, button) {
+  pointer-events: auto;
+}
+
+.motion .depth {
+  will-change: transform;
+}
+
+.word-mask {
+  display: inline-block;
+  overflow: clip;
+  overflow-clip-margin: 0.14em;
+  vertical-align: bottom;
+}
+
+.word {
+  display: inline-block;
+}
+
+/* Each word finishes arriving a little after the one before it. */
+.motion .word {
+  transform: translateY(calc(max(0, 1 - var(--q, 1) * 1.8 + var(--i) * 0.06) * 110%));
+}
+
+/* Preloader, only ever shown where the stage is expected. */
+.preloader {
+  display: none;
+}
+
+.motion .preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  transition:
+    opacity 0.7s ease,
+    visibility 0.7s;
+}
+
+.motion.ready .preloader {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/*
+ * The chapter index appears only where scrolling is the way through the page. It lives in the band
+ * above the beats' top padding, on its own solid pill, so it stays clear of pinned text and readable
+ * over any 3D or light section.
+ */
+.chapters {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .motion .chapters {
+    position: fixed;
+    top: 1rem;
+    right: clamp(1.25rem, 5vw, 5rem);
+    z-index: 40;
+    display: flex;
+    gap: 1.25rem;
+    padding: 0.55rem 1.1rem;
+    border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    color: var(--ink);
+    white-space: nowrap;
+  }
+}
+
+.chapters a {
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+.chapters a[aria-current],
+.chapters a:hover,
+.chapters a:focus-visible {
+  opacity: 1;
+}

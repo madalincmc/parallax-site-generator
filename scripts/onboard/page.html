@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>New site setup</title>
+<style>
+  :root {
+    --bg: #0d0e11; --panel: #16181d; --line: #2a2d35; --ink: #eceef2; --muted: #9a9fab;
+    --accent: #7fb2ff; --on-accent: #0b0d12; --danger: #ff8a80; --ok: #7ed6a5;
+    color-scheme: dark;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); line-height: 1.5; }
+  main { max-width: 760px; margin: 0 auto; padding: 32px 16px 96px; }
+  h1 { font-size: 1.9rem; line-height: 1.2; margin: 0 0 6px; letter-spacing: -0.01em; }
+  h2 { font-size: 1.05rem; margin: 32px 0 4px; }
+  p { margin: 0; }
+  .lead, .hint { color: var(--muted); }
+  .hint { font-size: 0.875rem; margin-top: 4px; }
+  .progress { display: flex; gap: 6px; margin-bottom: 28px; }
+  .progress span { flex: 1; height: 3px; border-radius: 2px; background: var(--line); }
+  .progress span.on { background: var(--accent); }
+  .eyebrow { color: var(--muted); font-size: 0.8rem; margin-bottom: 8px; }
+  label.field { display: block; margin-top: 20px; font-weight: 550; }
+  label.field .optional { color: var(--muted); font-weight: 400; }
+  input[type="text"], input[type="url"], textarea {
+    display: block; width: 100%; margin-top: 6px; padding: 10px 12px; color: var(--ink); font: inherit; font-weight: 400;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+  }
+  textarea { min-height: 84px; resize: vertical; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  .primary, .secondary { padding: 10px 18px; border-radius: 8px; font-weight: 600; border: 1px solid var(--line); background: var(--panel); }
+  .primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  button:disabled { opacity: 0.5; cursor: default; }
+  .nav { display: flex; justify-content: space-between; gap: 12px; margin-top: 36px; }
+  .choices { display: grid; gap: 8px; margin-top: 10px; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
+  .choice { display: block; text-align: left; width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+  .choice[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .choice strong { display: block; font-weight: 600; }
+  .choice small { display: block; color: var(--muted); margin-top: 2px; font-size: 0.82rem; }
+  .swatches { display: flex; gap: 4px; margin-bottom: 8px; }
+  .swatches i { width: 22px; height: 22px; border-radius: 50%; border: 1px solid rgba(128, 128, 128, 0.4); }
+  .font-sample { display: block; font-size: 1.45rem; line-height: 1.15; margin-bottom: 4px; overflow-wrap: anywhere; }
+  .row { display: flex; gap: 8px; align-items: flex-end; flex-wrap: wrap; }
+  .row > :first-child { flex: 1 1 240px; }
+  .section-row { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); margin-top: 8px; }
+  .section-row > div:first-child { flex: 1; min-width: 0; }
+  .section-row small { display: block; color: var(--muted); font-size: 0.85rem; }
+  .icon { width: 36px; height: 36px; border-radius: 6px; border: 1px solid var(--line); background: transparent; }
+  .tag { color: var(--muted); font-size: 0.8rem; white-space: nowrap; }
+  .notice { margin-top: 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 0.92rem; }
+  .notice.error { border-color: var(--danger); color: var(--danger); white-space: pre-wrap; overflow-wrap: anywhere; }
+  .notice.ok { border-color: var(--ok); }
+  .colors { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 12px; }
+  .colors label { font-size: 0.875rem; }
+  .colors input { display: block; width: 100%; height: 40px; margin-top: 4px; padding: 2px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; }
+  .preview { margin-top: 28px; padding: 32px 24px; border-radius: 10px; border: 1px solid var(--line); overflow: hidden; }
+  .preview .big { font-size: clamp(2rem, 7vw, 3.4rem); line-height: 1.02; letter-spacing: -0.02em; overflow-wrap: anywhere; }
+  .preview .small { margin-top: 10px; max-width: 34ch; }
+  .preview .cta { display: inline-block; margin-top: 16px; padding: 8px 16px; border-radius: 999px; font-size: 0.9rem; font-weight: 600; }
+  dl.summary { display: grid; grid-template-columns: minmax(90px, 150px) 1fr; gap: 8px 16px; margin: 20px 0 0; }
+  dl.summary dt { color: var(--muted); }
+  dl.summary dd { margin: 0; overflow-wrap: anywhere; }
+  .steps { list-style: none; margin: 24px 0 0; padding: 0; }
+  .steps li { display: flex; gap: 12px; padding: 7px 0; color: var(--muted); }
+  .steps li::before { content: ""; flex: none; width: 12px; height: 12px; margin-top: 6px; border-radius: 50%; border: 1px solid var(--line); }
+  .steps li.done { color: var(--ink); }
+  .steps li.done::before { background: var(--ok); border-color: var(--ok); }
+  .steps li.active { color: var(--ink); font-weight: 600; }
+  .steps li.active::before { background: var(--accent); border-color: var(--accent); }
+  .now { margin-top: 16px; color: var(--muted); font-size: 0.92rem; min-height: 1.4em; }
+  .stats { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 16px; color: var(--muted); font-size: 0.9rem; }
+  .report { margin-top: 20px; padding: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 0.92rem; }
+  .open { display: inline-block; margin-top: 20px; padding: 12px 22px; border-radius: 8px; background: var(--accent); color: var(--on-accent); font-weight: 650; text-decoration: none; }
+</style>
+</head>
+<body>
+<main id="app" aria-live="polite"><p class="lead">Loading…</p></main>
+<script>
+const TOKEN = "__TOKEN__";
+const app = document.getElementById("app");
+const TITLES = ["Your project", "Existing website", "Sections", "Look and feel", "Review"];
+let options;
+let step = 0;
+let repoBusy = false;
+let repoError = "";
+let formError = "";
+let creating = false;
+
+const state = {
+  name: "", about: "", audience: "", action: "", kind: "real", facts: "",
+  subject: "", thread: "auto", repoUrl: "", repo: null, useWording: true,
+  sections: [], theme: "auto",
+  palette: { mode: "auto" }, custom: { bg: "#0a0b0d", ink: "#ece8df", muted: "#94928b", accent: "#e4475a" },
+  fonts: { mode: "auto" }, customFonts: { heading: "", body: "" },
+  style: "auto", motion: "balanced", length: "standard", avoid: "", notes: "",
+};
+
+const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const post = async (path, body) => {
+  const res = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json", "X-Token": TOKEN }, body: JSON.stringify(body ?? {}) });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Something went wrong.");
+  return data;
+};
+
+function luminance(hex) {
+  const channel = (i) => {
+    const v = parseInt(hex.slice(i, i + 2), 16) / 255;
+    return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+  };
+  return 0.2126 * channel(1) + 0.7152 * channel(3) + 0.0722 * channel(5);
+}
+const contrast = (a, b) => {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+};
+
+function choice({ name, about, selected, action, value, top = "" }) {
+  return `<button type="button" class="choice" aria-pressed="${selected}" data-action="${action}" data-value="${esc(value)}">${top}<strong>${esc(name)}</strong>${about ? `<small>${esc(about)}</small>` : ""}</button>`;
+}
+const swatches = (colors) => `<span class="swatches">${colors.map((c) => `<i style="background:${esc(c)}"></i>`).join("")}</span>`;
+const fontSample = (family, label) => `<span class="font-sample" style="font-family:'${esc(family)}',serif">${esc(label)}</span>`;
+const nameOf = (skill) => options.SECTIONS.find((s) => s.skill === skill).name;
+
+function stepProject() {
+  return `
+    <h1>Tell me about your project</h1>
+    <p class="lead">Your answers guide the whole site, and answering uses none of your Claude usage.</p>
+    <label class="field">Name<input type="text" data-bind="name" maxlength="80" value="${esc(state.name)}"></label>
+    <label class="field">What is it?<textarea data-bind="about" maxlength="2000" placeholder="A small independent watchmaker launching its first watch.">${esc(state.about)}</textarea></label>
+    <label class="field">Who is it for? <span class="optional">Optional</span><input type="text" data-bind="audience" maxlength="500" value="${esc(state.audience)}"></label>
+    <label class="field">What should visitors do at the end? <span class="optional">Optional</span><input type="text" data-bind="action" maxlength="200" placeholder="Reserve a watch" value="${esc(state.action)}"></label>
+    <h2>Is this real?</h2>
+    <p class="hint">For a real project, Claude never invents numbers, prices or quotes. It leaves placeholders and lists them for you.</p>
+    <div class="choices">
+      ${choice({ name: "Real", about: "A business, product or person that exists.", selected: state.kind === "real", action: "kind", value: "real" })}
+      ${choice({ name: "Fictional", about: "A concept or test. Details can be invented.", selected: state.kind === "fictional", action: "kind", value: "fictional" })}
+    </div>
+    <label class="field">Facts to use <span class="optional">Optional</span><textarea data-bind="facts" maxlength="4000" placeholder="Prices, numbers, real quotes, links…">${esc(state.facts)}</textarea></label>
+    <h2>What carries through the page?</h2>
+    <div class="choices">${options.THREADS.map((t) => choice({ name: t.name, about: t.about, selected: state.thread === t.id, action: "thread", value: t.id })).join("")}</div>
+    <label class="field">What should the 3D show? <span class="optional">Optional</span><input type="text" data-bind="subject" maxlength="1000" placeholder="The watch comes apart as you scroll" value="${esc(state.subject)}"></label>
+    <p class="hint">Everything is generated from code, so mechanisms, glass, metal, landscapes and abstract forms work best. Photographs of people or food can't be made.</p>`;
+}
+
+function stepRepo() {
+  const repo = state.repo;
+  return `
+    <h1>Do you already have a website?</h1>
+    <p class="lead">Add its public GitHub repo, and the new site can use its colors, fonts and wording. Your repo isn't changed, and its code is never run. If you don't have one, skip this.</p>
+    <div class="row">
+      <label class="field">GitHub repo <span class="optional">Optional</span><input type="url" data-bind="repoUrl" placeholder="https://github.com/owner/repo" value="${esc(state.repoUrl)}"></label>
+      <button type="button" class="secondary" data-action="read-repo" ${repoBusy ? "disabled" : ""}>${repoBusy ? "Reading…" : "Read repo"}</button>
+    </div>
+    ${repoError ? `<div class="notice error" role="alert">${esc(repoError)}</div>` : ""}
+    ${repo ? `<div class="notice ok">
+        <strong>Found ${esc(repo.name)}</strong>${repo.description ? `<br>${esc(repo.description)}` : ""}
+        <p class="hint">${repo.colors.length ? "Colors:" : "No colors found."}</p>${repo.colors.length ? swatches(repo.colors.slice(0, 8)) : ""}
+        <p class="hint">${repo.fonts.length ? `Fonts: ${esc(repo.fonts.join(", "))}` : "No fonts found."}</p>
+      </div>
+      <h2>Use its wording?</h2>
+      <div class="choices">
+        ${choice({ name: "Yes", about: "Base the copy on what the site already says.", selected: state.useWording, action: "wording", value: "yes" })}
+        ${choice({ name: "No", about: "Use it for context, and write fresh copy.", selected: !state.useWording, action: "wording", value: "no" })}
+      </div>
+      <p class="hint">You can choose its colors and fonts on the Look and feel step. Its images aren't used, since everything on the new site is generated.</p>` : ""}`;
+}
+
+function stepSections() {
+  const middle = options.SECTIONS.filter((s) => !s.required);
+  const rows = state.sections.map((skill, i) => {
+    const section = options.SECTIONS.find((s) => s.skill === skill);
+    const locked = Boolean(section.required);
+    const canUp = !locked && i > 1;
+    const canDown = !locked && i < state.sections.length - 2;
+    return `<div class="section-row">
+      <div><strong>${esc(section.name)}</strong><small>${esc(section.about)}</small></div>
+      ${locked ? `<span class="tag">${section.required === "first" ? "Always first" : "Always last"}</span>` : `
+        <button type="button" class="icon" aria-label="Move ${esc(section.name)} up" data-action="up" data-value="${i}" ${canUp ? "" : "disabled"}>↑</button>
+        <button type="button" class="icon" aria-label="Move ${esc(section.name)} down" data-action="down" data-value="${i}" ${canDown ? "" : "disabled"}>↓</button>
+        <button type="button" class="icon" aria-label="Remove ${esc(section.name)}" data-action="remove" data-value="${i}">×</button>`}
+    </div>`;
+  }).join("");
+  const addable = middle.filter((s) => state.sections.filter((x) => x === s.skill).length < (s.repeat ?? 1));
+  const count = state.sections.length;
+  return `
+    <h1>Choose your sections</h1>
+    <p class="lead">This is the order they'll appear in as visitors scroll. The more you add, the longer it takes.</p>
+    ${rows}
+    ${addable.length ? `<h2>Add a section</h2><div class="choices">${addable.map((s) => choice({ name: s.name, about: s.about, selected: false, action: "add", value: s.skill })).join("")}</div>` : ""}
+    ${count > 8 ? `<div class="notice">Sites with more than 8 sections can start to drag. Consider removing one.</div>` : ""}
+    <h2>How long should the page feel?</h2>
+    <div class="choices">${options.LENGTHS.map((l) => choice({ name: l.name, about: l.about, selected: state.length === l.id, action: "length", value: l.id })).join("")}</div>`;
+}
+
+function currentColors() {
+  if (state.palette.mode === "custom") return state.custom;
+  if (state.palette.mode === "preset") return options.PALETTES.find((p) => p.id === state.palette.id);
+  return null;
+}
+function currentFonts() {
+  if (state.fonts.mode === "custom") return state.customFonts;
+  if (state.fonts.mode === "preset") return options.FONTS.find((f) => f.id === state.fonts.id);
+  return null;
+}
+
+function contrastIssues() {
+  if (state.palette.mode !== "custom") return "";
+  const colors = state.custom;
+  const issues = [];
+  if (contrast(colors.bg, colors.ink) < 4.5) issues.push("Your text color is hard to read on your background.");
+  if (contrast(colors.bg, colors.muted) < 3) issues.push("Your secondary text color is hard to read on your background.");
+  return issues.map((issue) => `<div class="notice error" role="alert">${esc(issue)}</div>`).join("");
+}
+
+function previewPanel() {
+  const colors = currentColors();
+  const fonts = currentFonts();
+  if (!colors && !fonts) return "";
+  return `<div class="preview" style="background:${esc(colors?.bg ?? "var(--panel)")};color:${esc(colors?.ink ?? "var(--ink)")}">
+      <div class="big" style="${fonts?.heading ? `font-family:'${esc(fonts.heading)}',serif` : ""}">${esc(state.name || "Your headline")}</div>
+      <p class="small" style="color:${esc(colors?.muted ?? "var(--muted)")};${fonts?.body ? `font-family:'${esc(fonts.body)}',sans-serif` : ""}">This is how supporting text reads under a large heading.</p>
+      <span class="cta" style="background:${esc(colors?.accent ?? "var(--accent)")};color:${esc(colors?.bg ?? "var(--on-accent)")}">${esc(state.action || "Call to action")}</span>
+    </div>`;
+}
+
+function refreshLive() {
+  const issues = document.getElementById("issues");
+  const preview = document.getElementById("preview");
+  if (issues) issues.innerHTML = contrastIssues();
+  if (preview) preview.innerHTML = previewPanel();
+  loadFonts();
+}
+
+function stepLook() {
+  const repo = state.repo;
+  const paletteChoices = [
+    choice({ name: "Let Claude choose", about: "Based on your project.", selected: state.palette.mode === "auto", action: "palette", value: "auto" }),
+    ...(repo ? [choice({ name: "From my website", about: repo.colors.length ? "" : "No colors found, so Claude will infer them.", top: repo.colors.length ? swatches(repo.colors.slice(0, 5)) : "", selected: state.palette.mode === "repo", action: "palette", value: "repo" })] : []),
+    ...options.PALETTES.map((p) => choice({ name: p.name, top: swatches([p.bg, p.ink, p.muted, p.accent]), selected: state.palette.mode === "preset" && state.palette.id === p.id, action: "palette", value: p.id })),
+    choice({ name: "Custom colors", about: "Pick your own.", selected: state.palette.mode === "custom", action: "palette", value: "custom" }),
+  ].join("");
+  const fontChoices = [
+    choice({ name: "Let Claude choose", about: "Based on your project.", selected: state.fonts.mode === "auto", action: "fonts", value: "auto" }),
+    ...(repo ? [choice({ name: "From my website", about: repo.fonts.join(", ") || "No fonts found, so Claude will infer them.", selected: state.fonts.mode === "repo", action: "fonts", value: "repo" })] : []),
+    ...options.FONTS.map((f) => choice({ name: f.name, about: `${f.heading} and ${f.body}`, top: fontSample(f.heading, "Aa Headline"), selected: state.fonts.mode === "preset" && state.fonts.id === f.id, action: "fonts", value: f.id })),
+    choice({ name: "Other Google fonts", about: "Type the names.", selected: state.fonts.mode === "custom", action: "fonts", value: "custom" }),
+  ].join("");
+  return `
+    <h1>Choose the look and feel</h1>
+    <p class="lead">Anything you leave on "Let Claude choose" is decided from your project.</p>
+    <h2>Theme</h2>
+    <div class="choices">${options.THEMES.map((t) => choice({ name: t.name, about: t.about, selected: state.theme === t.id, action: "theme", value: t.id })).join("")}</div>
+    <h2>Colors</h2>
+    <div class="choices">${paletteChoices}</div>
+    ${state.palette.mode === "custom" ? `<div class="colors">
+      ${[["bg", "Background"], ["ink", "Text"], ["muted", "Secondary text"], ["accent", "Accent"]].map(([key, label]) => `<label>${label}<input type="color" data-color="${key}" value="${esc(state.custom[key])}"></label>`).join("")}
+    </div><div id="issues">${contrastIssues()}</div>` : ""}
+    <h2>Fonts</h2>
+    <div class="choices">${fontChoices}</div>
+    ${state.fonts.mode === "custom" ? `
+      <label class="field">Heading font<input type="text" data-custom-font="heading" placeholder="Bodoni Moda" value="${esc(state.customFonts.heading)}"></label>
+      <label class="field">Body font<input type="text" data-custom-font="body" placeholder="Instrument Sans" value="${esc(state.customFonts.body)}"></label>` : ""}
+    <div id="preview">${previewPanel()}</div>
+    <h2>Style</h2>
+    <div class="choices">${options.STYLES.map((s) => choice({ name: s.name, selected: state.style === s.id, action: "style", value: s.id })).join("")}</div>
+    <h2>Motion</h2>
+    <div class="choices">${options.MOTIONS.map((m) => choice({ name: m.name, about: m.about, selected: state.motion === m.id, action: "motion", value: m.id })).join("")}</div>
+    <label class="field">Anything to avoid? <span class="optional">Optional</span><input type="text" data-bind="avoid" maxlength="1000" value="${esc(state.avoid)}"></label>
+    <label class="field">Anything else? <span class="optional">Optional</span><textarea data-bind="notes" maxlength="2000">${esc(state.notes)}</textarea></label>`;
+}
+
+function labelFor(list, id) { return list.find((item) => item.id === id)?.name ?? id; }
+function stepReview() {
+  const run = options.MEASURED_RUN;
+  const colors = { auto: "Claude chooses", repo: "From your website", custom: "Custom" }[state.palette.mode] ?? currentColors().name;
+  const fonts = { auto: "Claude chooses", repo: "From your website", custom: `${state.customFonts.heading} and ${state.customFonts.body}` }[state.fonts.mode] ?? `${currentFonts().heading} and ${currentFonts().body}`;
+  return `
+    <h1>Ready to create ${esc(state.name)}?</h1>
+    <dl class="summary">
+      <dt>Project</dt><dd>${esc(state.about)}</dd>
+      <dt>Kind</dt><dd>${state.kind === "real" ? "Real, so no invented facts" : "Fictional, so details can be invented"}</dd>
+      <dt>Existing site</dt><dd>${state.repo ? esc(state.repo.repo) : "None"}</dd>
+      <dt>Sections</dt><dd>${state.sections.map((s) => esc(nameOf(s))).join(" → ")}</dd>
+      <dt>Theme</dt><dd>${esc(labelFor(options.THEMES, state.theme))}</dd>
+      <dt>Colors</dt><dd>${esc(colors)}</dd>
+      <dt>Fonts</dt><dd>${esc(fonts)}</dd>
+      <dt>Style</dt><dd>${esc(labelFor(options.STYLES, state.style))}, ${esc(labelFor(options.MOTIONS, state.motion)).toLowerCase()} motion, ${esc(labelFor(options.LENGTHS, state.length)).toLowerCase()} page</dd>
+    </dl>
+    <div class="notice"><strong>What happens next</strong><br>
+      Claude builds each section, checks it in a browser, then reviews the whole site. It draws on your Claude Code usage, with no additional cost. The one ${run.sections}-section site measured so far took about ${run.minutes} minutes and ${run.tokens} tokens, so expect it to vary.</div>
+    <div class="notice">Your current site in this project is saved to <code>.archive/</code> first, then replaced.</div>
+    ${options.claudeInstalled ? "" : `<div class="notice error" role="alert">Claude Code wasn't found on this computer. Install it and sign in, then run this again.</div>`}`;
+}
+
+function validateStep() {
+  if (step === 0 && (!state.name.trim() || !state.about.trim())) return "Add a name and say what the project is.";
+  if (step === 2 && state.sections.length < 3) return "Add at least one section between the opening and the ending.";
+  if (step === 3 && state.fonts.mode === "custom" && (!state.customFonts.heading.trim() || !state.customFonts.body.trim())) return "Add both font names, or pick another font option.";
+  return "";
+}
+
+function render() {
+  const views = [stepProject, stepRepo, stepSections, stepLook, stepReview];
+  const last = step === views.length - 1;
+  app.innerHTML = `
+    <div class="progress" aria-hidden="true">${TITLES.map((_, i) => `<span class="${i <= step ? "on" : ""}"></span>`).join("")}</div>
+    <p class="eyebrow">Step ${step + 1} of ${TITLES.length}: ${TITLES[step]}</p>
+    ${views[step]()}
+    ${formError ? `<div class="notice error" role="alert">${esc(formError)}</div>` : ""}
+    <div class="nav">
+      ${step > 0 ? `<button type="button" class="secondary" data-action="back">Back</button>` : "<span></span>"}
+      ${last ? `<button type="button" class="primary" data-action="create" ${options.claudeInstalled && !creating ? "" : "disabled"}>${creating ? "Starting…" : "Create site"}</button>` : `<button type="button" class="primary" data-action="next">${step === 1 && !state.repo ? "Continue" : "Next"}</button>`}
+    </div>`;
+  loadFonts();
+}
+
+const loadedFonts = new Set();
+function loadFonts(typed = false) {
+  if (step !== 3) return;
+  // Only this setup page loads previews from Google. The finished site hosts its own fonts.
+  const wanted = [...options.FONTS.flatMap((f) => [f.heading, f.body]), ...(typed ? [state.customFonts.heading, state.customFonts.body] : [])]
+    .filter((f) => f && /^[\w ]+$/.test(f) && !loadedFonts.has(f));
+  for (const family of new Set(wanted)) {
+    loadedFonts.add(family);
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(family).replace(/%20/g, "+")}&display=swap`;
+    document.head.append(link);
+  }
+}
+
+function buildAnswers() {
+  const palette = state.palette.mode === "custom" ? { mode: "custom", ...state.custom } : state.palette;
+  const fonts = state.fonts.mode === "custom" ? { mode: "custom", ...state.customFonts } : state.fonts;
+  return {
+    name: state.name, about: state.about, audience: state.audience, action: state.action, kind: state.kind, facts: state.facts,
+    subject: state.subject, thread: state.thread, sections: state.sections, theme: state.theme, palette, fonts,
+    style: state.style, motion: state.motion, length: state.length, avoid: state.avoid, notes: state.notes,
+    reference: state.repo ? { repo: state.repo.repo, digest: state.repo.digest, useWording: state.useWording } : null,
+  };
+}
+
+const ACTIONS = {
+  next() { formError = validateStep(); if (!formError) { step++; window.scrollTo(0, 0); } },
+  back() { formError = ""; step--; window.scrollTo(0, 0); },
+  kind(v) { state.kind = v; }, thread(v) { state.thread = v; }, length(v) { state.length = v; },
+  theme(v) { state.theme = v; }, style(v) { state.style = v; }, motion(v) { state.motion = v; },
+  wording(v) { state.useWording = v === "yes"; },
+  palette(v) { state.palette = ["auto", "repo", "custom"].includes(v) ? { mode: v } : { mode: "preset", id: v }; },
+  fonts(v) { state.fonts = ["auto", "repo", "custom"].includes(v) ? { mode: v } : { mode: "preset", id: v }; },
+  add(v) { state.sections.splice(state.sections.length - 1, 0, v); },
+  remove(v) { state.sections.splice(Number(v), 1); },
+  up(v) { const i = Number(v); [state.sections[i - 1], state.sections[i]] = [state.sections[i], state.sections[i - 1]]; },
+  down(v) { const i = Number(v); [state.sections[i + 1], state.sections[i]] = [state.sections[i], state.sections[i + 1]]; },
+  async "read-repo"() {
+    repoBusy = true; repoError = ""; render();
+    try {
+      state.repo = await post("/repo", { url: state.repoUrl });
+      state.useWording = true;
+    } catch (error) {
+      repoError = error.message; state.repo = null;
+    }
+    if (!state.repo && state.palette.mode === "repo") state.palette = { mode: "auto" };
+    if (!state.repo && state.fonts.mode === "repo") state.fonts = { mode: "auto" };
+    repoBusy = false;
+  },
+  async create() {
+    creating = true; formError = ""; render();
+    try {
+      await post("/create", buildAnswers());
+      pollStatus();
+      return "stop";
+    } catch (error) {
+      formError = error.message;
+    }
+    creating = false;
+  },
+};
+
+app.addEventListener("click", async (event) => {
+  const button = event.target.closest("[data-action]");
+  if (!button || button.disabled) return;
+  const handled = await ACTIONS[button.dataset.action]?.(button.dataset.value);
+  if (handled !== "stop") {
+    const focusKey = `[data-action="${button.dataset.action}"][data-value="${button.dataset.value ?? ""}"]`;
+    render();
+    (document.querySelector(focusKey) ?? null)?.focus();
+  }
+});
+app.addEventListener("change", (event) => {
+  if (event.target.dataset.customFont) loadFonts(true);
+});
+app.addEventListener("input", (event) => {
+  const el = event.target;
+  if (el.dataset.bind) state[el.dataset.bind] = el.value;
+  if (el.dataset.customFont) state.customFonts[el.dataset.customFont] = el.value;
+  if (el.dataset.color) state.custom[el.dataset.color] = el.value;
+  if (el.dataset.color || el.dataset.customFont) refreshLive();
+});
+
+const minutes = (ms) => {
+  const m = Math.floor(ms / 60000);
+  const s = Math.floor(ms / 1000) % 60;
+  return `${m}:${String(s).padStart(2, "0")}`;
+};
+
+function renderRun(run) {
+  const heading = {
+    running: "Creating your site", building: "Almost there", ready: "Your site is ready",
+    failed: "That didn't finish", cancelled: "Stopped",
+  }[run.state] ?? "Creating your site";
+  const elapsed = run.startedAt ? minutes((run.finishedAt ?? run.now) - run.startedAt) : "";
+  app.innerHTML = `
+    <h1>${heading}</h1>
+    ${run.state === "running" || run.state === "building" ? `<p class="lead">You can leave this page open and come back. Keep the terminal window running.</p>` : ""}
+    <ul class="steps">${run.steps.map((s) => `<li class="${s.state}">${esc(s.name)}</li>`).join("")}</ul>
+    <p class="now">${esc(run.current)}</p>
+    <div class="stats">
+      <span>Time: ${elapsed}</span>
+      ${run.tokens ? `<span>Tokens: ${(run.tokens / 1e6).toFixed(2)} million</span>` : ""}
+      ${run.limit !== null ? `<span>Session limit used: ${run.limit}%</span>` : ""}
+    </div>
+    ${run.state === "ready" ? `<a class="open" href="${esc(run.url)}" target="_blank" rel="noopener">Open your site</a>
+      <p class="hint">It's running at ${esc(run.url)} until you stop this window. To change it, open Claude Code in this folder and ask.</p>` : ""}
+    ${run.archived ? `<p class="hint">Your previous site was saved to ${esc(run.archived)}.</p>` : ""}
+    ${run.error ? `<div class="notice error" role="alert">${esc(run.error)}</div>` : ""}
+    ${run.state === "running" ? `<div class="nav"><span></span><button type="button" class="secondary" id="cancel">Stop</button></div>` : ""}
+    ${run.state === "failed" || run.state === "cancelled" ? `<div class="nav"><span></span><button type="button" class="primary" id="again">Back to my answers</button></div>` : ""}
+    ${run.report ? `<div class="report">${esc(run.report)}</div>` : ""}`;
+  document.getElementById("cancel")?.addEventListener("click", () => post("/cancel"));
+  document.getElementById("again")?.addEventListener("click", () => { polling = false; creating = false; step = TITLES.length - 1; render(); });
+}
+
+let polling = false;
+async function pollStatus() {
+  polling = true;
+  while (polling) {
+    try {
+      const run = await (await fetch("/status")).json();
+      renderRun(run);
+      if (["ready", "failed", "cancelled"].includes(run.state)) return;
+    } catch {
+      app.insertAdjacentHTML("beforeend", `<div class="notice error" role="alert">Lost contact with the setup window. Is it still running?</div>`);
+      return;
+    }
+    await new Promise((done) => setTimeout(done, 1500));
+  }
+}
+
+(async () => {
+  options = await (await fetch("/options")).json();
+  state.sections = [
+    ...options.SECTIONS.filter((s) => s.required === "first"),
+    ...options.SECTIONS.filter((s) => s.default),
+    ...options.SECTIONS.filter((s) => s.required === "last"),
+  ].map((s) => s.skill);
+  const run = await (await fetch("/status")).json();
+  if (run.state !== "idle") pollStatus();
+  else render();
+})();
+</script>
+</body>
+</html>

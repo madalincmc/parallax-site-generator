@@ -1,0 +1,9 @@
+/* The site's design tokens. Written by /site, and used by every section. */
+:root {
+  --bg: #000000;
+  --ink: #ffffff;
+  --ink-on-dark: #ffffff;
+  --ink-on-light: #000000;
+  --muted: #a3a3a3;
+  --accent: #ff5f57;
+}
