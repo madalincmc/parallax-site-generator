@@ -1,35 +1,41 @@
-// The window opens turned away and small, then swings to face the viewer as the camera pushes in.
-// Its insides are held back for the story.
+// Departure. Before dawn, the plane comes toward the camera with the first light behind it, its windows
+// and lights glowing. The camera swings down its side and settles behind it, looking down the route.
 import * as THREE from "three";
-import { segment, track } from "@/stage/kit";
+import { lerp, track } from "@/stage/kit";
 import type { ActFactory, Vec3 } from "@/stage/types";
-import { terminalOf } from "@/site/terminal";
+import { moodAt } from "@/site/world";
 
-const act: ActFactory = (world) => {
-  const terminal = terminalOf(world);
+const planeZ = (p: number) => lerp(0, -40, p);
+
+const act: ActFactory = () => {
+  const group = new THREE.Group();
   return {
-    group: new THREE.Group(),
+    group,
     camera(p, aspect) {
-      if (aspect < 1) {
-        return {
-          position: track([[0, [0, -1.2, 13]], [1, [0, -1.6, 9.5]]] as [number, Vec3][], p),
-          target: [0, -1.1, 0],
-          fov: 30,
-        };
-      }
-      return {
-        position: track([[0, [0, 0.5, 12.5]], [0.55, [-0.4, -0.2, 8.4]], [1, [0.2, -0.4, 8]]] as [number, Vec3][], p),
-        target: track([[0, [0, 0.35, 0]], [1, [0, -0.4, 0]]] as [number, Vec3][], p),
-        fov: 30,
-      };
+      const phone = aspect < 1;
+      const z = planeZ(p);
+      const offset: Vec3 = track(
+        [
+          [0, phone ? [-5, -0.2, -17] : [-6.5, -0.4, -12]],
+          [0.5, phone ? [-15, 1, 1] : [-10.5, 0.8, 1]],
+          [1, [2, 2.2, 11]],
+        ],
+        p,
+      );
+      const aim: Vec3 = track(
+        [
+          [0, phone ? [0, 0.4, 0] : [0.6, 0.3, 0]],
+          [0.5, phone ? [0, -2.2, 0] : [0, -1.4, -1]],
+          [1, [0, 0.5, -30]],
+        ],
+        p,
+      );
+      return { position: [offset[0], offset[1], z + offset[2]], target: [aim[0], aim[1], z + aim[2]], fov: track([[0, 34], [0.5, 38], [1, 40]], p) };
     },
     thread(p) {
-      const turn = 1 - segment(p, 0, 0.55);
-      return { position: [0, 0.35, 0], rotation: [0.1 * turn, -0.62 * turn, 0.03 * turn], scale: 1 };
+      return { position: [0, 0, planeZ(p)], rotation: [0.02, 0, 0], scale: 1 };
     },
-    update({ weight }) {
-      terminal.pose({}, weight);
-    },
+    mood: (p) => moodAt(planeZ(p)),
   };
 };
 

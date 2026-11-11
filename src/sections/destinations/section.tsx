@@ -8,10 +8,7 @@ const DETAIL = "text-muted mt-3 text-sm leading-relaxed";
 function Project({ name, href, children }: { name: string; href: string; children: string }) {
   return (
     <li className="border-t border-white/10 pt-3">
-      <Link
-        href={href}
-        className="font-display text-base font-bold tracking-tight underline-offset-4 hover:underline"
-      >
+      <Link href={href} className="font-display text-base font-bold tracking-tight underline-offset-4 hover:underline">
         {name} <span aria-hidden>→</span>
       </Link>
       <p className="text-muted mt-1 text-sm leading-snug">{children}</p>
@@ -19,20 +16,19 @@ function Project({ name, href, children }: { name: string; href: string; childre
   );
 }
 
-export default function Features() {
+export default function Destinations() {
   return (
-    <Section slug="features" length={4.5} label="Projects">
+    <Section slug="destinations" length={4.5} label="Projects">
+      {/* Card on the left: the first two summits stand off the right wing. */}
       <Beat from={0} to={0.3} className="justify-end md:justify-center">
         <div className={`${PANEL} md:max-w-[min(38vw,32rem)]`}>
-          <h2 className="font-display text-[clamp(2.25rem,3.4vw,3.75rem)] leading-[0.98] font-bold tracking-tight">
+          <p className={LABEL}>Destinations · 01 / 03</p>
+          <h2 className="font-display mt-3 text-[clamp(2.25rem,3.4vw,3.75rem)] leading-[0.98] font-bold tracking-tight">
             <Words text="Test automation tools" />
           </h2>
           <p className={DETAIL}>Built for the discipline I started in.</p>
           <ul className="mt-5 grid gap-3">
-            <Project
-              name="Web Element Selector Generator"
-              href="/projects/web-element-selector-generator"
-            >
+            <Project name="Web Element Selector Generator" href="/projects/web-element-selector-generator">
               A Chrome and Firefox extension that generates CSS, XPath and Playwright locators, with ready-to-use test code.
             </Project>
             <Project name="QA Automation Playground" href="/projects/qa-automation-playground">
@@ -42,17 +38,18 @@ export default function Features() {
         </div>
       </Beat>
 
+      {/* Card low on the right: the next two summits off the left wing. */}
       <Beat from={0.34} to={0.63} className="justify-end md:items-end md:justify-start">
         <div className={`${PANEL} md:max-w-md`}>
-          <p className={LABEL}>AI</p>
+          <p className={LABEL}>Destinations · 02 / 03</p>
           <h3 className="font-display mt-3 text-[clamp(2rem,3.4vw,3.5rem)] leading-none font-bold tracking-tight">
             <Words text="Built with Claude" />
           </h3>
           <p className={DETAIL}>I use AI in my own projects to learn where it helps and where it doesn&rsquo;t.</p>
           <ul className="mt-5 grid gap-3">
             <Project name="Video Generator" href="/projects/video-generator">
-              Type a prompt, get an MP4 or a live website animation. Claude Code writes the three.js scene and checks its
-              own frames.
+              Type a prompt, get an MP4 or a live website animation. Claude Code writes the three.js scene and checks its own
+              frames.
             </Project>
             <Project name="Claude LinkedIn Studio" href="/projects/claude-linkedin-studio">
               Write, refine and publish LinkedIn posts from Claude, in your own voice.
@@ -61,10 +58,11 @@ export default function Features() {
         </div>
       </Beat>
 
+      {/* Wide card along the bottom: the last two summits dead ahead, above it. */}
       <Beat from={0.67} to={0.95} className="justify-end">
         <div className={`${PANEL} grid gap-6 md:grid-cols-[1fr_1.4fr]`}>
           <div>
-            <p className={LABEL}>Live</p>
+            <p className={LABEL}>Destinations · 03 / 03</p>
             <h3 className="font-display mt-3 text-[clamp(2rem,4vw,4.5rem)] leading-none font-bold tracking-tight">
               <Words text="Applications and websites" />
             </h3>

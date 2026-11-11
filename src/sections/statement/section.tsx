@@ -6,7 +6,7 @@ export default function Statement() {
       <Beat from={0} to={0.95} className="justify-end">
         {/* The ghost word and the running line only exist where scrolling moves them. */}
         <Depth speed={0.3} className="absolute top-[30svh] left-[4vw] hidden [.motion_&]:block">
-          <div aria-hidden data-bleed className="font-display text-[clamp(8rem,30vw,32rem)] leading-none whitespace-nowrap opacity-[0.05]">
+          <div aria-hidden data-bleed className="font-display text-[clamp(8rem,30vw,32rem)] leading-none whitespace-nowrap opacity-[0.06]">
             side projects
           </div>
         </Depth>

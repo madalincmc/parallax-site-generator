@@ -7,35 +7,29 @@ export default function Closer() {
   return (
     <>
       <Section slug="closer" length={3.5} label="Contact">
-        <Beat from={0.36} to={1} className="items-center text-center">
-          <h2 className="font-display text-[clamp(3.5rem,10vw,10rem)] leading-[0.92] font-bold tracking-tight">
+        {/* Caption: a short line low on the left while the plane comes down through the last of the cloud. */}
+        <Beat from={0.08} to={0.34} className="justify-end">
+          <p className="on-sky text-accent font-mono text-xs tracking-widest uppercase">Final approach</p>
+          <p className="on-sky font-display mt-3 text-[clamp(2.25rem,5vw,5.5rem)] leading-[1.02] font-bold tracking-tight">Cleared to land.</p>
+        </Beat>
+
+        {/* Crown: the call to action over the night sky, the lit runway running away beneath it. */}
+        <Beat from={0.46} to={1} className="items-center text-center">
+          <h2 className="on-sky font-display text-[clamp(3.5rem,10vw,10rem)] leading-[0.92] font-bold tracking-tight">
             <Words text="Get in touch." />
           </h2>
-          <p className="text-muted mt-4 max-w-lg text-sm leading-relaxed">
-            For questions, feedback on a project, or a conversation about engineering, testing or AI, email or LinkedIn
-          works best.
+          <p className="on-sky text-ink/85 mt-4 max-w-lg text-sm leading-relaxed">
+            For questions, feedback on a project, or a conversation about engineering, testing or AI, email or LinkedIn works
+            best.
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
-            <a
-              href="mailto:cotetiumadalin@gmail.com"
-              className="bg-accent text-bg rounded-full px-7 py-3.5 text-sm font-semibold"
-            >
+            <a href="mailto:cotetiumadalin@gmail.com" className="bg-accent text-bg rounded-full px-7 py-3.5 text-sm font-semibold">
               cotetiumadalin@gmail.com
             </a>
-            <a
-              href="https://www.linkedin.com/in/madalin-cotetiu-a8b1189b/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`${LINK} text-sm`}
-            >
+            <a href="https://www.linkedin.com/in/madalin-cotetiu-a8b1189b/" target="_blank" rel="noopener noreferrer" className={`${LINK} on-sky text-sm`}>
               LinkedIn
             </a>
-            <a
-              href="https://github.com/madalincmc"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`${LINK} text-sm`}
-            >
+            <a href="https://github.com/madalincmc" target="_blank" rel="noopener noreferrer" className={`${LINK} on-sky text-sm`}>
               GitHub
             </a>
           </div>

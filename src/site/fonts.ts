@@ -1,6 +1,6 @@
 // next/font downloads these at build time and serves them from this site, so nothing loads from
 // another origin at runtime. Keep the two CSS variable names; globals.css depends on them.
-// The same three families as Madalin's existing site. --font-code is the terminal's mono.
+// The same three families as Madalin's earlier site. --font-code is the mono of tickets and departure boards.
 import { Archivo, Geist_Mono, Space_Grotesk } from "next/font/google";
 
 const body = Archivo({ subsets: ["latin"], variable: "--font-body" });
