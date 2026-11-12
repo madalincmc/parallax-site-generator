@@ -1,7 +1,7 @@
-// Small text labels that live in the 3D world, drawn on a canvas from code: waypoint names, summit names.
+// Small text labels that live in the 3D world, drawn on a canvas from code: summit names, balloon names.
 import * as THREE from "three";
 
-export function makeLabel(top: string, bottom: string, color = "#ffcf3f") {
+export function makeLabel(top: string, bottom: string, color = "#ffb648") {
   const canvas = document.createElement("canvas");
   canvas.width = 512;
   canvas.height = 128;
@@ -11,7 +11,7 @@ export function makeLabel(top: string, bottom: string, color = "#ffcf3f") {
   g.fillStyle = color;
   g.font = "700 30px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
   g.fillText(top, 256, 38, 480);
-  g.fillStyle = "#f6f7fb";
+  g.fillStyle = "#fbf4ec";
   g.font = "700 46px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
   g.fillText(bottom, 256, 88, 490);
   const texture = new THREE.CanvasTexture(canvas);

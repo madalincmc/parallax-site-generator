@@ -1,17 +1,17 @@
 /* The site's design tokens. Written by /site, and used by every section. */
-/* A flight from first light to a night landing: deep dusk blue, cabin white, and airport-sign yellow. */
+/* A balloon flight from a violet dawn to a lantern-lit night: deep violet, warm white, and burner amber. */
 :root {
-  --bg: #070b1c;
-  --ink: #f6f7fb;
-  --ink-on-dark: #f6f7fb;
-  --ink-on-light: #0b1430;
-  --muted: #a3aecb;
-  --accent: #ffcf3f;
+  --bg: #17122e;
+  --ink: #fbf4ec;
+  --ink-on-dark: #fbf4ec;
+  --ink-on-light: #2a1838;
+  --muted: #c4b6cc;
+  --accent: #ffb648;
 }
 
-/* Type that sits directly on the sky: a soft shadow of the field colour keeps it readable over cloud. */
+/* Type that sits directly on the sky: a soft shadow of the field colour keeps it readable over mist. */
 .on-sky {
-  text-shadow: 0 2px 30px color-mix(in srgb, var(--bg) 80%, transparent), 0 0 8px color-mix(in srgb, var(--bg) 55%, transparent);
+  text-shadow: 0 2px 30px color-mix(in srgb, var(--bg) 85%, transparent), 0 0 10px color-mix(in srgb, var(--bg) 60%, transparent);
 }
 [data-tone="light"] .on-sky {
   text-shadow: none;

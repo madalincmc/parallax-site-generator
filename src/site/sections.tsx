@@ -8,7 +8,7 @@ import Route from "@/sections/route/section";
 import Statement from "@/sections/statement/section";
 
 export const sections: { slug: string; label: string; anchor?: string; Component: ComponentType }[] = [
-  { slug: "hero", label: "Departure", Component: Hero },
+  { slug: "hero", label: "Lift-off", Component: Hero },
   { slug: "route", label: "Route", Component: Route },
   { slug: "statement", label: "Approach", Component: Statement },
   { slug: "destinations", label: "Projects", Component: Destinations },

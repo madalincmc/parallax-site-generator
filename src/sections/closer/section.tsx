@@ -7,13 +7,13 @@ export default function Closer() {
   return (
     <>
       <Section slug="closer" length={3.5} label="Contact">
-        {/* Caption: a short line low on the left while the plane comes down through the last of the cloud. */}
+        {/* Caption: a short line low on the left while the balloon comes down through the last of the mist. */}
         <Beat from={0.08} to={0.34} className="justify-end">
-          <p className="on-sky text-accent font-mono text-xs tracking-widest uppercase">Final approach</p>
-          <p className="on-sky font-display mt-3 text-[clamp(2.25rem,5vw,5.5rem)] leading-[1.02] font-bold tracking-tight">Cleared to land.</p>
+          <p className="on-sky text-accent font-mono text-xs tracking-widest uppercase">Coming down</p>
+          <p className="on-sky font-display mt-3 text-[clamp(2.25rem,5vw,5.5rem)] leading-[1.02] font-bold tracking-tight">Landing by lantern light.</p>
         </Beat>
 
-        {/* Crown: the call to action over the night sky, the lit runway running away beneath it. */}
+        {/* Crown: the call to action over the night sky, the glowing balloons and the village below it. */}
         <Beat from={0.46} to={1} className="items-center text-center">
           <h2 className="on-sky font-display text-[clamp(3.5rem,10vw,10rem)] leading-[0.92] font-bold tracking-tight">
             <Words text="Get in touch." />

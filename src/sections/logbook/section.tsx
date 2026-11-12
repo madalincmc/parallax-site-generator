@@ -14,16 +14,16 @@ export default function Logbook() {
   ];
   return (
     <Section slug="logbook" length={3} label="Logbook">
-      {/* Spec: three figures in a row low on the left, the plane a small shape against the sunset. */}
+      {/* Spec: three figures in a row low on the left, the balloon a small shape against the sunset. */}
       <Beat from={0.06} to={0.46} className="justify-end">
-        <h2 className={`${LABEL} on-sky text-accent`}>Logbook</h2>
+        <h2 className={`${LABEL} on-sky text-ink`}>Logbook</h2>
         <ul className="mt-5 grid max-w-3xl grid-cols-3 gap-4 md:gap-10">
           {figures.map((f) => (
             <li key={f.label} className="border-t border-white/25 pt-4">
               <p className={FIGURE}>
                 <Words text={f.value} />
               </p>
-              <p className={`${LABEL} on-sky text-accent mt-3`}>{f.unit}</p>
+              <p className={`${LABEL} on-sky text-ink mt-3`}>{f.unit}</p>
               <p className="on-sky text-ink/85 mt-1 text-sm leading-snug">{f.label}</p>
             </li>
           ))}

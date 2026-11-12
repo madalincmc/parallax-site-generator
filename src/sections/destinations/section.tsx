@@ -19,10 +19,10 @@ function Project({ name, href, children }: { name: string; href: string; childre
 export default function Destinations() {
   return (
     <Section slug="destinations" length={4.5} label="Projects">
-      {/* Card on the left: the first two summits stand off the right wing. */}
+      {/* Card on the left: the first pair of balloons fly on the right. */}
       <Beat from={0} to={0.3} className="justify-end md:justify-center">
         <div className={`${PANEL} md:max-w-[min(38vw,32rem)]`}>
-          <p className={LABEL}>Destinations · 01 / 03</p>
+          <p className={LABEL}>The fleet · 01 / 03</p>
           <h2 className="font-display mt-3 text-[clamp(2.25rem,3.4vw,3.75rem)] leading-[0.98] font-bold tracking-tight">
             <Words text="Test automation tools" />
           </h2>
@@ -38,10 +38,10 @@ export default function Destinations() {
         </div>
       </Beat>
 
-      {/* Card low on the right: the next two summits off the left wing. */}
+      {/* Card low on the right: the next pair on the left. */}
       <Beat from={0.34} to={0.63} className="justify-end md:items-end md:justify-start">
         <div className={`${PANEL} md:max-w-md`}>
-          <p className={LABEL}>Destinations · 02 / 03</p>
+          <p className={LABEL}>The fleet · 02 / 03</p>
           <h3 className="font-display mt-3 text-[clamp(2rem,3.4vw,3.5rem)] leading-none font-bold tracking-tight">
             <Words text="Built with Claude" />
           </h3>
@@ -58,11 +58,11 @@ export default function Destinations() {
         </div>
       </Beat>
 
-      {/* Wide card along the bottom: the last two summits dead ahead, above it. */}
+      {/* Wide card along the bottom: the last pair ahead, either side of the balloon above it. */}
       <Beat from={0.67} to={0.95} className="justify-end">
         <div className={`${PANEL} grid gap-6 md:grid-cols-[1fr_1.4fr]`}>
           <div>
-            <p className={LABEL}>Destinations · 03 / 03</p>
+            <p className={LABEL}>The fleet · 03 / 03</p>
             <h3 className="font-display mt-3 text-[clamp(2rem,4vw,4.5rem)] leading-none font-bold tracking-tight">
               <Words text="Applications and websites" />
             </h3>
