@@ -17,6 +17,14 @@ type Beat = { el: HTMLElement; from: number; to: number; fade: number; last: num
 type Reveal = { el: HTMLElement; top: number; order: number; last: number; counts: Count[] };
 type Count = { el: HTMLElement; to: number; format: Intl.NumberFormat; last: string };
 type Time = { el: HTMLElement; format: Intl.DateTimeFormat | null };
+type Carousel = { track: HTMLElement; index: HTMLElement | null; thumbs: HTMLElement[]; last: number };
+
+/** The distance from one carousel slide to the next. */
+function slideStep(track: HTMLElement) {
+  const [first, second] = track.children as HTMLCollectionOf<HTMLElement>;
+  if (!first) return track.clientWidth || 1;
+  return second ? second.offsetLeft - first.offsetLeft : first.offsetWidth || 1;
+}
 type Depth = { el: HTMLElement; speed: number };
 type Listener = (frame: Frame, now: number) => void;
 
@@ -71,6 +79,7 @@ export function createClock() {
   let spans: Span[] = [];
   let reveals: Reveal[] = [];
   let times: Time[] = [];
+  let carousels: Carousel[] = [];
   let lastTick = 0;
   const progress = document.querySelector<HTMLElement>("[data-scroll-progress]");
   const lang = document.documentElement.lang || "en";
@@ -114,6 +123,12 @@ export function createClock() {
       el,
       format: clockFormat(el.dataset.time!, lang),
     }));
+    carousels = [...document.querySelectorAll<HTMLElement>("[data-carousel]")].flatMap((el) => {
+      const track = el.querySelector<HTMLElement>("[data-carousel-track]");
+      if (!track) return [];
+      const thumbs = [...el.querySelectorAll<HTMLElement>("[data-carousel-go]")];
+      return [{ track, index: el.querySelector<HTMLElement>("[data-carousel-index]"), thumbs, last: -1 }];
+    });
     lastTick = 0;
     dirty = true;
   };
@@ -206,6 +221,13 @@ export function createClock() {
       paint(frame);
     }
     listeners.forEach((listener) => listener(frame, now));
+    for (const carousel of carousels) {
+      const at = Math.round(carousel.track.scrollLeft / slideStep(carousel.track));
+      if (at === carousel.last) continue;
+      carousel.last = at;
+      if (carousel.index) carousel.index.textContent = String(at + 1).padStart(2, "0");
+      carousel.thumbs.forEach((thumb, i) => (i === at ? thumb.setAttribute("aria-current", "true") : thumb.removeAttribute("aria-current")));
+    }
     if (times.length && now - lastTick > 1000) {
       lastTick = now;
       const date = new Date();
@@ -229,6 +251,23 @@ export function createClock() {
   };
   document.addEventListener("click", onLink);
 
+  // Carousel buttons: previous, next, or a thumbnail's slide. The row itself scrolls natively.
+  const onCarousel = (event: MouseEvent) => {
+    const button = (event.target as HTMLElement).closest?.<HTMLElement>("[data-carousel-prev],[data-carousel-next],[data-carousel-go]");
+    const track = button?.closest("[data-carousel]")?.querySelector<HTMLElement>("[data-carousel-track]");
+    if (!button || !track) return;
+    const step = slideStep(track);
+    const current = Math.round(track.scrollLeft / step);
+    const target =
+      button.dataset.carouselGo !== undefined
+        ? Number(button.dataset.carouselGo)
+        : current + (button.dataset.carouselNext !== undefined ? 1 : -1);
+    const count = track.children.length;
+    const next = (target + count) % count; // wraps at either end
+    track.scrollTo({ left: next * step, behavior: motion ? "smooth" : "auto" });
+  };
+  document.addEventListener("click", onCarousel);
+
   return {
     motion,
     sections: () => spans,
@@ -248,6 +287,7 @@ export function createClock() {
       resizeObserver.disconnect();
       window.removeEventListener("resize", measure);
       document.removeEventListener("click", onLink);
+      document.removeEventListener("click", onCarousel);
       lenis?.destroy();
       listeners.clear();
     },

@@ -85,6 +85,9 @@
   .sp-editorial em { position: absolute; right: 14px; top: 16px; width: 10px; height: 10px; border-radius: 50%; background: #e01b24; }
   .sp-signal { background: #121212 linear-gradient(#ffffff0d 1px, transparent 1px) 0 0 / 100% 22px; color: #f2f4f5; }
   .sp-signal small { position: absolute; left: 12px; top: 10px; color: #d5fe00; font: 10px/1 ui-monospace, monospace; letter-spacing: 0.15em; }
+  .sp-frame { background: #ede6d6; }
+  .sp-frame i { position: absolute; left: 50%; top: 50%; width: 46%; height: 62%; translate: -50% -50%; border-radius: 6px; background: linear-gradient(160deg, #9fb7c9 0 42%, #e9e4da 42% 60%, #c9a27c 60% 72%, #6f8f5b 72%); box-shadow: 0 0 0 12px #ede6d680; }
+  .sp-frame b { position: absolute; left: 10px; top: 8px; color: #2a2725; font: 600 9px/1 system-ui, sans-serif; letter-spacing: 0.18em; }
   .sp-signal b { position: absolute; left: 10px; bottom: 8px; font: 700 46px/1 ui-monospace, monospace; letter-spacing: -0.03em; }
   .open { display: inline-block; margin-top: 20px; padding: 12px 22px; border-radius: 8px; background: var(--accent); color: var(--on-accent); font-weight: 650; text-decoration: none; }
 </style>
@@ -100,6 +103,7 @@ const STYLE_PREVIEWS = {
   film: '<span class="sp sp-film" aria-hidden="true"><i></i><b>One take</b></span>',
   editorial: '<span class="sp sp-editorial" aria-hidden="true"><b>Aa</b><i></i><i></i><i></i><em></em></span>',
   signal: '<span class="sp sp-signal" aria-hidden="true"><small>STATUS // ONLINE</small><b>000%</b></span>',
+  frame: '<span class="sp sp-frame" aria-hidden="true"><i></i><b>MENU ⠿</b></span>',
 };
 let options;
 let step = 0;
@@ -107,10 +111,12 @@ let repoBusy = false;
 let repoError = "";
 let formError = "";
 let creating = false;
+let imagesNote = "";
+let imagesError = false;
 
 const state = {
   name: "", about: "", audience: "", action: "", kind: "real", facts: "",
-  subject: "", thread: "auto", repoUrl: "", repo: null, useWording: true,
+  subject: "", thread: "auto", imagesFolder: "", repoUrl: "", repo: null, useWording: true,
   sections: [], theme: "auto",
   palette: { mode: "auto" }, custom: { bg: "#0a0b0d", ink: "#ece8df", muted: "#94928b", accent: "#e4475a" },
   fonts: { mode: "auto" }, customFonts: { heading: "", body: "" },
@@ -171,6 +177,7 @@ const SUBJECT_PROMPTS = {
   film: ["What should the 3D show?", "The watch comes apart as you scroll"],
   editorial: ["What object should sit in the margin?", "A ceramic vessel that turns as each chapter opens"],
   signal: ["What is the central artifact?", "A faceted black rock, scanned and opened section by section"],
+  frame: ["What are the photographs of?", "Houses we built in Maramureș, from 2019 to 2025"],
 };
 
 function stepStyle() {
@@ -181,8 +188,13 @@ function stepStyle() {
     <div class="choices">${options.STYLES.map((s) => choice({ name: s.name, about: `${s.tagline}. ${s.about}`, top: STYLE_PREVIEWS[s.id] ?? "", selected: state.style === s.id, action: "style", value: s.id })).join("")}</div>
     ${state.style === "film" ? `<h2>What carries through the page?</h2>
     <div class="choices">${options.THREADS.map((t) => choice({ name: t.name, about: t.about, selected: state.thread === t.id, action: "thread", value: t.id })).join("")}</div>` : ""}
+    ${styleOf().photos ? `<label class="field">Folder with your photographs<input type="text" data-bind="imagesFolder" placeholder="C:/Users/you/Pictures/portfolio" value="${esc(state.imagesFolder)}"></label>
+    <p class="hint">JPEG, PNG, WebP or AVIF, up to 40. They're copied, resized and stripped of camera data; your originals aren't changed. Name them in the order you'd like them shown.</p>
+    ${imagesNote ? `<div class="notice ${imagesError ? "error" : "ok"}" role="status">${esc(imagesNote)}</div>` : ""}` : ""}
     <label class="field">${esc(subjectLabel)} <span class="optional">Optional</span><input type="text" data-bind="subject" maxlength="1000" placeholder="${esc(subjectHint)}" value="${esc(state.subject)}"></label>
-    <p class="hint">Everything is generated from code, so mechanisms, glass, metal, stone, landscapes and abstract forms work best. Photographs of people or food can't be made.</p>`;
+    <p class="hint">${styleOf().photos
+      ? "Your photographs are the only images used. Everything else, from the frames to the mist between chapters, is drawn in code."
+      : "Everything is generated from code, so mechanisms, glass, metal, stone, landscapes and abstract forms work best. Photographs of people or food can't be made."}</p>`;
 }
 
 function stepRepo() {
@@ -322,6 +334,7 @@ function stepReview() {
     <dl class="summary">
       <dt>Project</dt><dd>${esc(state.about)}</dd>
       <dt>Style</dt><dd>${esc(styleOf().name)}: ${esc(styleOf().tagline.toLowerCase())}</dd>
+      ${styleOf().photos ? `<dt>Photographs</dt><dd>${state.imagesFolder.trim() ? esc(imagesNote || state.imagesFolder) : "None: generated covers stand in for them"}</dd>` : ""}
       <dt>Kind</dt><dd>${state.kind === "real" ? "Real, so no invented facts" : "Fictional, so details can be invented"}</dd>
       <dt>Existing site</dt><dd>${state.repo ? esc(state.repo.repo) : "None"}</dd>
       <dt>Sections</dt><dd>${state.sections.map((s) => esc(nameOf(s))).join(" → ")}</dd>
@@ -338,6 +351,7 @@ function stepReview() {
 
 function validateStep() {
   if (step === STEP.project && (!state.name.trim() || !state.about.trim())) return "Add a name and say what the project is.";
+  if (step === STEP.style && styleOf().photos && state.imagesFolder.trim() && imagesError) return "Check the folder of photographs, or leave it empty.";
   if (step === STEP.sections && state.sections.length < 3) return "Add at least one section between the opening and the ending.";
   if (step === STEP.look && state.fonts.mode === "custom" && (!state.customFonts.heading.trim() || !state.customFonts.body.trim())) return "Add both font names, or pick another font option.";
   return "";
@@ -381,11 +395,22 @@ function buildAnswers() {
     subject: state.subject, thread: state.thread, sections: state.sections, theme: state.theme, palette, fonts,
     style: state.style, look: state.look, motion: state.motion, length: state.length, avoid: state.avoid, notes: state.notes,
     reference: state.repo ? { repo: state.repo.repo, digest: state.repo.digest, useWording: state.useWording } : null,
+    images: styleOf().photos && state.imagesFolder.trim() ? { folder: state.imagesFolder.trim() } : null,
   };
 }
 
 const ACTIONS = {
-  next() { formError = validateStep(); if (!formError) { step++; window.scrollTo(0, 0); } },
+  async next() {
+    if (step === STEP.style && styleOf().photos && state.imagesFolder.trim()) {
+      try {
+        const found = await post("/images", { folder: state.imagesFolder.trim() });
+        imagesNote = `Found ${found.count} photographs.`; imagesError = false;
+      } catch (error) {
+        imagesNote = error.message; imagesError = true;
+      }
+    }
+    formError = validateStep(); if (!formError) { step++; window.scrollTo(0, 0); }
+  },
   back() { formError = ""; step--; window.scrollTo(0, 0); },
   kind(v) { state.kind = v; }, thread(v) { state.thread = v; }, length(v) { state.length = v; },
   theme(v) { state.theme = v; }, look(v) { state.look = v; }, motion(v) { state.motion = v; },

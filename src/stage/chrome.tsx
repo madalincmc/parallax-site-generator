@@ -2,6 +2,7 @@
 // their own menu. Whatever the style, the fixed menu carries the class `chapters`, which
 // scripts/check.mjs uses to fail text that runs under it.
 import Link from "next/link";
+import { getPosts, getProjects } from "@/lib/content";
 import { brief } from "@/site/brief";
 import { LocalTime } from "./dom";
 import { clocks, siteStyle, status } from "./style";
@@ -22,6 +23,18 @@ export function Preloader() {
           0%
         </span>
         <i className="preloader-bar" />
+      </div>
+    );
+  if (siteStyle === "frame")
+    return (
+      <div className="preloader preloader-frame" aria-hidden="true">
+        <i className="preloader-frame-box" />
+        <span className="font-display text-[clamp(2.5rem,8vw,6.5rem)] leading-[0.92] tracking-[-0.02em]">
+          {brief.name}
+        </span>
+        <span className="preloader-frame-count text-xs tracking-[0.2em] tabular-nums" data-preloader-count="">
+          0%
+        </span>
       </div>
     );
   if (siteStyle === "signal")
@@ -51,16 +64,44 @@ export function Preloader() {
   );
 }
 
+/** Links to /projects and /blog, but only to pages that have something on them. */
 function PageLinks() {
   return (
     <>
-      <Link href="/projects">All projects</Link>
-      <Link href="/blog">Blog</Link>
+      {getProjects().length > 0 && <Link href="/projects">All projects</Link>}
+      {getPosts().length > 0 && <Link href="/blog">Blog</Link>}
     </>
   );
 }
 
 export function Menu({ sections }: { sections: Entry[] }) {
+  if (siteStyle === "frame")
+    return (
+      <header className="chapters chrome chrome-frame">
+        <a href={sections[0] ? href(sections[0]) : "#"} className="chrome-name">
+          {brief.name}
+        </a>
+        <details className="chrome-menu">
+          <summary>
+            Menu
+            <span className="chrome-menu-dots" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+              <i />
+            </span>
+          </summary>
+          <nav aria-label="Chapters">
+            {sections.map((entry) => (
+              <a key={entry.slug} href={href(entry)} data-nav={entry.slug}>
+                {entry.label}
+              </a>
+            ))}
+            <PageLinks />
+          </nav>
+        </details>
+      </header>
+    );
   if (siteStyle === "editorial")
     return (
       <header className="chapters chrome chrome-editorial">
@@ -120,9 +161,11 @@ export function Menu({ sections }: { sections: Entry[] }) {
           {entry.label}
         </a>
       ))}
-      <span aria-hidden="true" className="opacity-30">
-        |
-      </span>
+      {getProjects().length + getPosts().length > 0 && (
+        <span aria-hidden="true" className="opacity-30">
+          |
+        </span>
+      )}
       <PageLinks />
     </nav>
   );

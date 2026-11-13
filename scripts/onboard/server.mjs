@@ -2,7 +2,7 @@
 // /site with those answers and reports progress. Answering uses no Claude usage; generating does.
 import { execFile, spawn } from "node:child_process";
 import { randomBytes } from "node:crypto";
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { createServer } from "node:http";
 import { createServer as createNetServer } from "node:net";
 import { createRequire } from "node:module";
@@ -10,6 +10,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import * as options from "./options.mjs";
 import { prepareNewSite, ROOT } from "./prepare.mjs";
+import { importImages } from "./images.mjs";
 import { readRepo } from "./repo.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -40,6 +41,17 @@ const ids = (list) => new Set(list.map((item) => item.id));
 const text = (value, max) => (typeof value === "string" ? value.trim().slice(0, max) : "");
 const isColor = (value) => typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value);
 const pick = (value, list, fallback) => (ids(list).has(value) ? value : fallback);
+const PHOTO = /\.(jpe?g|png|webp|avif)$/i;
+
+/** Counts the photographs in a folder on this computer, without reading or copying them yet. */
+function countPhotos(folder) {
+  const path = text(folder, 500);
+  if (!path || !existsSync(path) || !statSync(path).isDirectory()) throw new Error("There's no folder at that path.");
+  const count = readdirSync(path).filter((name) => PHOTO.test(name)).length;
+  if (!count) throw new Error("That folder has no JPEG, PNG, WebP or AVIF images.");
+  if (count > 40) throw new Error(`That folder has ${count} images. Choose at most 40.`);
+  return { path, count };
+}
 
 /** Rebuilds the answers field by field, so only known values ever reach the config file. */
 function validate(answers) {
@@ -95,6 +107,9 @@ function validate(answers) {
     : null;
   if ((palette.mode === "repo" || fonts.mode === "repo") && !reference) throw new Error("Read your repo first to use its colors or fonts.");
 
+  const usesPhotos = options.STYLES.find((item) => item.id === style)?.photos;
+  const photos = usesPhotos && answers.images?.folder ? countPhotos(answers.images.folder) : null;
+
   return {
     name,
     about,
@@ -116,6 +131,9 @@ function validate(answers) {
     avoid: text(answers.avoid, 1000),
     notes: text(answers.notes, 2000),
     reference,
+    // The folder stays on this computer: the config only says photographs were imported, and how many.
+    images: photos ? { count: photos.count, manifest: "public/images/work/manifest.json" } : null,
+    imagesFolder: photos?.path,
   };
 }
 
@@ -256,8 +274,9 @@ async function startPreview() {
   finish("ready");
 }
 
-function startRun(config) {
+async function startRun({ imagesFolder, ...config }) {
   run.archived = prepareNewSite();
+  if (imagesFolder) await importImages(imagesFolder);
   writeFileSync(join(ROOT, CONFIG_FILE), `${JSON.stringify(config, null, 2)}\n`);
   Object.assign(run, {
     state: "running", steps: stepsFor(config), current: "Starting Claude", startedAt: Date.now(), finishedAt: null,
@@ -344,6 +363,10 @@ const server = createServer(async (req, res) => {
     if (req.method === "GET" && path === "/status") {
       return send(res, 200, { ...run, seen: undefined, now: Date.now() });
     }
+    if (req.method === "POST" && path === "/images") {
+      const { folder } = await readBody(req);
+      return send(res, 200, { count: countPhotos(folder).count });
+    }
     if (req.method === "POST" && path === "/repo") {
       const { url } = await readBody(req);
       return send(res, 200, await readRepo(ROOT, url));
@@ -351,7 +374,7 @@ const server = createServer(async (req, res) => {
     if (req.method === "POST" && path === "/create") {
       if (run.state === "running" || run.state === "building") return send(res, 409, { error: "A site is already being created." });
       const config = validate(await readBody(req));
-      startRun(config);
+      await startRun(config);
       return send(res, 200, { ok: true });
     }
     if (req.method === "POST" && path === "/cancel") {

@@ -8,8 +8,9 @@ writes every scene and word as code.
 **Hard constraint:** no API keys, paid services, image or video models, or downloaded assets. Fonts
 come through `next/font`, which self-hosts them. Only the wizard's own page previews them from Google. Don't add anything that breaks this.
 
-The one exception, at the owner's request: `public/images/` holds the owner's own screenshots and diagrams
-for `/projects` and `/blog`. The 3D home page and generated sections still use none.
+The exceptions, at the owner's request: `public/images/` holds the owner's own screenshots and diagrams
+for `/projects` and `/blog`, and, for the Frame style, the owner's own photographs in `public/images/work/`,
+imported by `scripts/onboard/images.mjs`. Never add other images to the home page or generated sections.
 
 ## Layout
 
@@ -17,7 +18,8 @@ for `/projects` and `/blog`. The 3D home page and generated sections still use n
   skill follows, and `styles/`, one guide per site style (Film, Editorial, Signal) that every skill reads
 - `.claude/skills/section-*/`: one skill per kind of section
 - `src/stage/`: the shared engine. `clock.ts` owns scrolling and DOM effects, `engine.ts` owns WebGL,
-  `dom.tsx` has the section building blocks, `plate.tsx` the generated cover art, `chrome.tsx` the menu
+  `dom.tsx` has the section building blocks, `plate.tsx` the generated cover art, `frames.tsx` the photo
+  blocks for the Frame style (Expand, Sequence, Carousel, Scatter, InlinePhoto, Mist), `chrome.tsx` the menu
   and preloader for each style, `style.ts` reads `brief.style`, and `kit.ts` the scene helpers
   (`math.ts` holds its pure parts, so server components can use them without three.js)
 - `src/site/`: this site's brief, tokens, fonts, shared world and section order. Generated
@@ -29,7 +31,8 @@ for `/projects` and `/blog`. The 3D home page and generated sections still use n
 - `scripts/capture.mjs`: records a live site scroll-through (WebP, MP4, stills) into `docs/media/` for the README.
   `docs/` is in `.vercelignore`, so the media never ships with a deploy
 - `scripts/onboard/`: the setup wizard. `server.mjs` runs it and starts `/site`, `page.html` is its page,
-  `options.mjs` lists its choices, `repo.mjs` reads a public repo into a digest, `prepare.mjs` archives the
+  `options.mjs` lists its choices, `repo.mjs` reads a public repo into a digest, `images.mjs` imports a folder
+  of the owner's photographs for Frame, `prepare.mjs` archives the
   current site, and `starter/` is what a new site starts from
 
 ## Commands

@@ -397,6 +397,479 @@ body {
   color: var(--bg);
 }
 
+/*
+ * Frame: photographs (src/stage/frames.tsx). Every move is arithmetic on the section's --p, so the clock
+ * stays the only loop. --k is a block's own 0..1 between its `from` and `to`, and --e is --k eased.
+ * Without .motion every block is a plain photo or a plain row of photos.
+ */
+:is(.photo, .expand, .sequence, .carousel, .scatter, .inline-photo) img {
+  object-fit: cover;
+}
+
+.photo {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+}
+
+.photo-media {
+  position: absolute;
+  inset: 0;
+}
+
+.motion .photo-media {
+  translate: 0 calc((0.5 - var(--p, 0.5)) * var(--drift, 0) * 1%);
+  scale: calc(1 + var(--drift, 0) * 0.012);
+}
+
+.inline-photo {
+  position: relative;
+  display: inline-block;
+  width: 1.7em;
+  height: 0.82em;
+  margin-right: 0.2em;
+  overflow: hidden;
+  border-radius: 0.12em;
+  vertical-align: baseline;
+  translate: 0 0.06em;
+}
+
+.expand {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  aspect-ratio: var(--ratio);
+}
+
+.expand-inner {
+  position: absolute;
+  inset: 0;
+}
+
+.expand::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Text sits over it only when it fills the screen, so the shade grows with its area. */
+.motion .expand::after {
+  opacity: calc(var(--shade, 0) * var(--w) * var(--h) / 10000);
+}
+
+/* The start and end frames: one pair for wide screens and one for tall ones (see portraitRect). */
+.motion .expand {
+  --x0: var(--sx);
+  --y0: var(--sy);
+  --w0: var(--sw);
+  --h0: var(--sh);
+  --x1: var(--ex);
+  --y1: var(--ey);
+  --w1: var(--ew);
+  --h1: var(--eh);
+}
+
+@media (max-aspect-ratio: 1 / 1) {
+  .motion .expand {
+    --x0: var(--psx);
+    --y0: var(--psy);
+    --w0: var(--psw);
+    --h0: var(--psh);
+    --x1: var(--pex);
+    --y1: var(--pey);
+    --w1: var(--pew);
+    --h1: var(--peh);
+  }
+}
+
+.motion .expand {
+  --k: clamp(0, (var(--p, 0) - var(--from)) / (var(--to) - var(--from)), 1);
+  --e: calc(var(--k) * var(--k) * (3 - 2 * var(--k)));
+  --x: calc(var(--x0) + (var(--x1) - var(--x0)) * var(--e));
+  --y: calc(var(--y0) + (var(--y1) - var(--y0)) * var(--e));
+  --w: calc(var(--w0) + (var(--w1) - var(--w0)) * var(--e));
+  --h: calc(var(--h0) + (var(--h1) - var(--h0)) * var(--e));
+  --r: calc(var(--r0) + (var(--r1) - var(--r0)) * var(--e));
+  position: absolute;
+  inset: 0;
+  aspect-ratio: auto;
+  border-radius: 0;
+  clip-path: inset(
+    calc(var(--y) * 1%) calc((100 - var(--x) - var(--w)) * 1%) calc((100 - var(--y) - var(--h)) * 1%)
+      calc(var(--x) * 1%) round calc(var(--r) * 1px)
+  );
+}
+
+/* The whole picture scales with its frame, centered in it, so a glimpse becomes the full view. */
+.motion .expand:not(.expand-crop) .expand-inner {
+  transform: translate(calc((var(--x) + var(--w) / 2 - 50) * 1%), calc((var(--y) + var(--h) / 2 - 50) * 1%))
+    scale(calc(max(var(--w), var(--h)) / 100));
+}
+
+.motion .expand-crop .expand-inner {
+  transform: scale(calc(1.18 - 0.18 * var(--e)));
+}
+
+.sequence {
+  display: grid;
+  gap: 1rem;
+}
+
+.sequence-item {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  aspect-ratio: 16 / 10;
+}
+
+.sequence-media {
+  position: absolute;
+  inset: 0;
+}
+
+.sequence-caption {
+  position: absolute;
+  inset: auto 0 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: clamp(1rem, 3vw, 2.5rem);
+  padding-bottom: calc(clamp(1rem, 3vw, 2.5rem) + 1.25rem);
+  background: linear-gradient(transparent, rgb(0 0 0 / 0.5));
+  color: #fff;
+}
+
+.sequence-title {
+  display: block;
+  font-size: clamp(1.75rem, 4vw, 3.5rem);
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+.sequence-note {
+  display: block;
+  margin-top: 0.6rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.sequence-index {
+  font-size: clamp(2.5rem, 6vw, 5.5rem);
+  font-variant-numeric: tabular-nums;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+}
+
+.sequence-index small {
+  margin-left: 0.5em;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  vertical-align: top;
+  opacity: 0.7;
+}
+
+.sequence-ui {
+  display: none;
+}
+
+.motion .sequence {
+  --k: clamp(0, (var(--p, 0) - var(--from)) / (var(--to) - var(--from)), 1);
+  --t: calc(var(--k) * (var(--n) - 1));
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.motion .sequence-item {
+  --a0: clamp(0, var(--t) - var(--i) + 1, 1);
+  --a: calc(var(--a0) * var(--a0) * (3 - 2 * var(--a0)));
+  --b: clamp(0, var(--t) - var(--i), 1);
+  position: absolute;
+  inset: 0;
+  border-radius: 0;
+  aspect-ratio: auto;
+  clip-path: inset(calc((1 - var(--a)) * 100%) 0 0 0);
+}
+
+.motion .sequence-media {
+  transform: translateY(calc(var(--b) * -10%)) scale(calc(1.12 - 0.12 * var(--a)));
+}
+
+.motion .sequence-caption {
+  opacity: calc(clamp(0, (var(--a) - 0.55) * 3, 1) - clamp(0, var(--b) * 3, 1));
+}
+
+.motion .sequence-ui {
+  position: absolute;
+  inset: 0;
+  display: block;
+  color: #fff;
+  pointer-events: none;
+}
+
+.sequence-bar {
+  position: absolute;
+  inset: auto clamp(1rem, 3vw, 2.5rem) clamp(0.9rem, 2vw, 1.5rem);
+  height: 2px;
+  background: rgb(255 255 255 / 0.25);
+}
+
+.sequence-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  transform: scaleX(var(--k));
+  transform-origin: left;
+}
+
+.sequence-dots {
+  position: absolute;
+  top: 50%;
+  right: clamp(1rem, 3vw, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  translate: 0 -50%;
+}
+
+.sequence-dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+  opacity: calc(0.3 + 0.7 * clamp(0, 1 - max(var(--t) - var(--i), var(--i) - var(--t)), 1));
+}
+
+.carousel {
+  position: relative;
+  pointer-events: auto;
+}
+
+.carousel-track {
+  display: flex;
+  gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-slide {
+  flex: 0 0 var(--slide, 78%);
+  margin: 0;
+  scroll-snap-align: start;
+}
+
+.carousel-media {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.carousel-caption {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.carousel-note {
+  color: var(--muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.carousel-ui,
+.carousel-thumbs {
+  display: none;
+}
+
+.js .carousel-ui {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.carousel-ui button {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+  border-radius: 50%;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
+}
+
+.carousel-ui button:hover,
+.carousel-ui button:focus-visible {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.js .carousel-thumbs {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.carousel-thumbs button {
+  position: relative;
+  width: 4.5rem;
+  overflow: hidden;
+  border-radius: 6px;
+  aspect-ratio: 4 / 3;
+  opacity: 0.45;
+  transition: opacity 0.3s ease;
+}
+
+.carousel-thumbs button[aria-current],
+.carousel-thumbs button:hover {
+  opacity: 1;
+}
+
+.scatter {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .motion .scatter {
+    position: absolute;
+    inset: 0;
+    display: block;
+    pointer-events: none;
+  }
+}
+
+.scatter-tile {
+  position: absolute;
+  top: calc(var(--y) * 1%);
+  left: calc(var(--x) * 1%);
+  width: calc(var(--w) * 1vw);
+  overflow: hidden;
+  border-radius: 10px;
+  transform: translateY(calc((0.5 - var(--p, 0.5)) * var(--depth) * 100vh));
+}
+
+.mist {
+  display: none;
+}
+
+/* A band 2.5 screens tall whose middle is solid: it rises from below until it covers the screen. */
+.motion .mist {
+  --k: clamp(0, (var(--p, 0) - var(--from)) / (var(--to) - var(--from)), 1);
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 5;
+  display: block;
+  height: 250%;
+  transform: translateY(calc(40% - var(--k) * 70%));
+  pointer-events: none;
+  will-change: transform;
+}
+
+.motion .mist-clear {
+  transform: translateY(calc(-30% - var(--k) * 70%));
+}
+
+.mist svg {
+  display: block;
+}
+
+/* The Frame style's menu: white with difference blending, so it reads over photographs and paper. */
+.chrome-frame {
+  color: #fff;
+  mix-blend-mode: difference;
+}
+
+.chrome-frame .chrome-name {
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.chrome-menu {
+  position: relative;
+  font-weight: 600;
+}
+
+.chrome-menu summary {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+  cursor: pointer;
+  list-style: none;
+}
+
+.chrome-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.chrome-menu-dots {
+  display: grid;
+  grid-template-columns: repeat(2, 3px);
+  gap: 2px;
+}
+
+.chrome-menu-dots i {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.chrome-menu nav {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+}
+
+.motion .preloader-frame {
+  place-items: center;
+}
+
+.preloader-frame-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(18% + 76% * var(--load, 0));
+  height: calc(22% + 70% * var(--load, 0));
+  border: 1px solid color-mix(in srgb, var(--ink) 35%, transparent);
+  border-radius: 14px;
+  translate: -50% -50%;
+  transition:
+    width 0.6s cubic-bezier(0.32, 0.72, 0, 1),
+    height 0.6s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.preloader-frame-count {
+  position: absolute;
+  right: clamp(1.25rem, 5vw, 5rem);
+  bottom: clamp(1.25rem, 5vw, 3rem);
+}
+
 /* Markdown on the project and blog pages. */
 .prose {
   max-width: 44rem;

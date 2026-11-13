@@ -20,7 +20,8 @@ const OUT = join(ROOT, "checks");
 const NEXT = join(ROOT, "node_modules/next/dist/bin/next");
 
 const BUDGET = {
-  transferKb: 600, // everything the page downloads, compressed
+  transferKb: 600, // everything the page downloads except photographs, compressed
+  imagesKb: 1500, // photographs on the first screen (the Frame style), served by next/image
   medianMs: 14, // on the integrated GPU at 1920x1080
   p95Ms: 24,
 };
@@ -125,8 +126,15 @@ async function openSite(browser, origin, { viewport, reducedMotion, noWebgl, noJ
   }
   const cdp = await page.createCDPSession();
   await cdp.send("Network.enable");
-  const transfer = { bytes: 0 };
-  cdp.on("Network.loadingFinished", (event) => (transfer.bytes += event.encodedDataLength));
+  const transfer = { bytes: 0, images: 0 };
+  const imageRequests = new Set();
+  cdp.on("Network.responseReceived", (event) => {
+    if (event.type === "Image") imageRequests.add(event.requestId);
+  });
+  cdp.on("Network.loadingFinished", (event) => {
+    if (imageRequests.has(event.requestId)) transfer.images += event.encodedDataLength;
+    else transfer.bytes += event.encodedDataLength;
+  });
   await page.goto(origin, { waitUntil: "load" });
   if (!noJs) await page.waitForFunction(() => document.documentElement.classList.contains("ready"), { timeout: 15000 });
   if (!noJs) await sleep(900); // the preloader's fade
@@ -244,8 +252,10 @@ async function main() {
       if (software) console.log("Frame budgets skipped: no hardware GPU available to this browser.");
     }
     const transferKb = desktop.transfer.bytes / 1024;
-    console.log(`Transfer: ${transferKb.toFixed(0)} KB (budget ${BUDGET.transferKb})`);
+    const imagesKb = desktop.transfer.images / 1024;
+    console.log(`Transfer: ${transferKb.toFixed(0)} KB (budget ${BUDGET.transferKb})${imagesKb ? `, first-screen images ${imagesKb.toFixed(0)} KB (budget ${BUDGET.imagesKb})` : ""}`);
     expect(transferKb <= BUDGET.transferKb, `Page downloads ${transferKb.toFixed(0)} KB.`);
+    expect(imagesKb <= BUDGET.imagesKb, `Images on the first screen weigh ${imagesKb.toFixed(0)} KB. Use sizes, and priority only on the first photo.`);
 
     // --- Camera continuity: the world must never cut under the viewer's thumb.
     const jumps = await page.evaluate(() => {
@@ -281,6 +291,15 @@ async function main() {
       }
       await tile(sectionFrames, 3, 640, join(OUT, `${section.slug}.png`));
     }
+    const images = await page.evaluate(() => {
+      const all = [...document.querySelectorAll("img")];
+      return {
+        noAlt: all.filter((img) => !img.hasAttribute("alt")).map((img) => img.getAttribute("src")?.slice(0, 60)),
+        broken: all.filter((img) => img.complete && img.naturalWidth === 0 && img.currentSrc).map((img) => img.currentSrc.slice(0, 80)),
+      };
+    });
+    expect(!images.noAlt.length, `Images with no alt attribute: ${images.noAlt.slice(0, 3).join(", ")}`);
+    expect(!images.broken.length, `Images that failed to load: ${images.broken.slice(0, 3).join(", ")}`);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
     expect(overflow <= 1, `The page scrolls sideways by ${overflow}px on desktop.`);
     if (!values.section) {

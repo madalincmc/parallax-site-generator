@@ -15,19 +15,19 @@ no image models, no downloaded assets, no API keys, no extra costs.
 
 <br>
 
-<img src="docs/media/styles.webp" alt="The three site styles side by side: Film, Editorial and Signal" width="100%">
+<img src="docs/media/styles.webp" alt="The four site styles: Film, Editorial, Signal and Frame" width="100%">
 
-<sub><b>Film</b> &nbsp;·&nbsp; <b>Editorial</b> &nbsp;·&nbsp; <b>Signal</b>: three styles, one engine, all generated from a brief</sub>
+<sub><b>Film</b> &nbsp;·&nbsp; <b>Editorial</b> &nbsp;·&nbsp; <b>Signal</b> &nbsp;·&nbsp; <b>Frame</b>: four styles, one engine, all generated from a brief</sub>
 
 <br><br>
 
-[**Styles**](#three-styles) · [**Quick start**](#quick-start) · [**How it works**](#how-it-works) · [**Skills**](#the-skills) · [**Checks**](#checks) · [**Style guide**](STYLES.md)
+[**Styles**](#four-styles) · [**Quick start**](#quick-start) · [**How it works**](#how-it-works) · [**Skills**](#the-skills) · [**Checks**](#checks) · [**Style guide**](STYLES.md)
 
 </div>
 
 ---
 
-## Three styles
+## Four styles
 
 The style is the first decision. It sets the layout, the menu and preloader, the type system, how much
 of the page is pinned, and what the 3D does. Colors, fonts and sections come afterwards.
@@ -104,16 +104,40 @@ which a lime scan passes through and the page opens step by step.
 <sub>Inspired by studio sites like <a href="https://www.allerstudio.com/">Aller</a>.
 &nbsp;<a href="https://madalin-cotetiu-signal-portfolio.vercel.app"><b>Live</b></a> · <a href="docs/media/signal-madalin.mp4">MP4</a></sub>
 
-| | 🎬 Film | 📰 Editorial | 📡 Signal |
-|---|---|---|---|
-| **Ground** | The 3D world itself | Paper | Near-black |
-| **Type** | Characterful display, plain body | Serif, grotesk and mono | Uppercase technical display and mono readouts |
-| **The 3D** | A world the camera travels through | A specimen in the margin | An artifact at the center, scanned and opened |
-| **Pinned** | Almost everything | The hero, and at most one case study | The hero, plus one or two big moments |
-| **Menu** | A pill of chapters | A bar with numbered chapters | A HUD bar with status, clocks and `[042]` |
-| **Best for** | Products, places, journeys | Studios, practices, people | Technical, bold or nocturnal brands |
+### 🖼️ Frame: *every picture, from a glimpse to the full screen*
 
-> The same person, Madalin, in all three styles: the [balloon flight](https://cotetiu-madalin-parallax-portfolio.vercel.app),
+For photographs: a photographer's or an architect's portfolio, a place, a collection. Pictures arrive
+small, as a card, a floating tile or a frame inside a sentence, and grow until they fill the screen.
+Then they settle into a numbered run of full-screen photos and swipeable carousels, with a bank of mist
+rolling over each change of chapter. The 3D steps back to become the paper. Your photographs are the
+only images, and everything else is code.
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="docs/media/frame-test.webp" alt="A Frame test site scrolling: a hero photo shrinks into a card, mist, a numbered run of photos and a carousel">
+      <br><sub>The whole page: hero → card, floating tiles, mist, the numbered run, the carousel · <a href="docs/media/frame-test.mp4">MP4</a></sub>
+    </td>
+    <td width="50%">
+      <img src="docs/media/frame-reveal.webp" alt="The Frame reveal: a small photo in the middle of a marquee grows to fill the screen">
+      <br><sub>The reveal: a small photo inside the marquee grows to the full screen · <a href="docs/media/frame-reveal.mp4">MP4</a></sub>
+    </td>
+  </tr>
+</table>
+
+<sub>A test site for a fictional architectural photographer, with test photographs from <a href="https://unsplash.com">Unsplash</a>.
+Inspired by residence sites like <a href="https://stillform.homes/">Still / Form</a>.</sub>
+
+| | 🎬 Film | 📰 Editorial | 📡 Signal | 🖼️ Frame |
+|---|---|---|---|---|
+| **Ground** | The 3D world itself | Paper | Near-black | Warm linen |
+| **Type** | Characterful display, plain body | Serif, grotesk and mono | Uppercase technical display and mono readouts | Condensed serif and a tight grotesk |
+| **The 3D** | A world the camera travels through | A specimen in the margin | An artifact at the center, scanned and opened | Just the paper: your photos are the subject |
+| **Pinned** | Almost everything | The hero, and at most one case study | The hero, plus one or two big moments | The hero, the reveal and the numbered run |
+| **Menu** | A pill of chapters | A bar with numbered chapters | A HUD bar with status, clocks and `[042]` | A transparent bar, "Menu ⠿" |
+| **Best for** | Products, places, journeys | Studios, practices, people | Technical, bold or nocturnal brands | Photographers, architects, places |
+
+> The same person, Madalin, in three of the styles: the [balloon flight](https://cotetiu-madalin-parallax-portfolio.vercel.app),
 > the [journal](https://madalin-cotetiu-editorial-portfolio.vercel.app) and the [control room](https://madalin-cotetiu-signal-portfolio.vercel.app).
 > Same facts and projects, three completely different sites.
 
@@ -138,6 +162,7 @@ built, the page gives you a link to it.
 npm run site -- "a site for a fictional mechanical watch, dark and precise"
 npm run site -- --style editorial "a portfolio for a small ceramics studio"
 npm run site -- --style signal "an independent AI lab in Cluj, precise and a little dramatic"
+npm run site -- --style frame --images ~/Pictures/portfolio "an architectural photographer in Cluj"
 ```
 
 Or type `/site <brief>` in Claude Code. Without a style, `/site` picks one from the brief and says why.
@@ -191,7 +216,8 @@ flowchart TB
 - 🔁 The look depends only on scroll, time and the pointer, so scrolling back undoes everything.
 - ♿ The page works with no JavaScript, with reduced motion and without WebGL.
 - ⚡ three.js loads after first paint, in its own chunk, and the budgets run on an integrated GPU.
-- 🎨 Everything on screen is code. Covers are generated SVG, and objects and worlds are procedural.
+- 🎨 Everything on screen is code. Covers are generated SVG, and objects and worlds are procedural. The one
+  exception is your own photographs, in Frame: resized, stripped of camera data and served at the size each screen needs.
 - 🧾 For a real person or business, no invented facts: anything unknown becomes a `[placeholder]`.
 
 ---
@@ -210,6 +236,7 @@ flowchart TB
 | `/section-gallery` | A sideways run of procedural plates |
 | `/section-proof` | Numbers, quotes and names |
 | `/section-faq` | Questions as an accordion that needs no JavaScript |
+| `/section-carousel` | Photographs to swipe or click through, with a counter and thumbnails |
 | `/section-closer` | The final image, the call to action and the footer |
 
 Each section skill also works alone, for example `/section-statement slug=claim: "Nothing is wasted"`,
@@ -226,6 +253,8 @@ and builds in the site's current style. The guides they follow live in
 | `Marquee` | An endless row, such as skills or client names |
 | `LocalTime` | The time now in a city |
 | `Plate` | Generated SVG cover art in the site's colors: `ridges` `orbits` `horizon` `halftone` `spectrum` `stack` `glyph` |
+| `Expand` · `Sequence` · `Carousel` | Photos that grow from a glimpse to the full screen, numbered full-screen runs, and swipeable carousels with thumbnails |
+| `Scatter` · `InlinePhoto` · `Mist` | Floating photo tiles, a photo inside a sentence, and a cloud bank between chapters drawn from SVG noise |
 
 ---
 
@@ -241,7 +270,8 @@ It builds the site, opens it in headless Chrome on the integrated GPU, and fails
 | | |
 |---|---|
 | 🧱 Broken builds and browser errors | 🌐 Any request off the site |
-| ⏱️ Frame time over 14 ms median or 24 ms p95 | 📦 More than 600 KB downloaded |
+| ⏱️ Frame time over 14 ms median or 24 ms p95 | 📦 More than 600 KB of code and fonts, or 1.5 MB of first-screen photos |
+| 🖼️ Photos with no alt text, or that fail to load | |
 | ↔️ Sideways scrolling | 🔤 Text off screen, overlapping or under the menu |
 | ♿ Text lost with reduced motion | 🚫 Text lost without JavaScript or WebGL |
 
@@ -259,13 +289,13 @@ selected text files. Each new site saves the previous one to `.archive/`.
 
 ```
 .claude/skills/
-  site/            /site, the contract, and styles/ (film.md, editorial.md, signal.md)
+  site/            /site, the contract, and styles/ (film, editorial, signal, frame)
   section-*/       one skill per kind of section
-src/stage/         the shared engine: clock, WebGL engine, blocks, plates, chrome per style
+src/stage/         the shared engine: clock, WebGL engine, blocks, plates, photo frames, chrome per style
 src/site/          this site's brief, tokens, fonts, world and section order   (generated)
 src/sections/      each section's page content and its act in the 3D          (generated)
 content/           Markdown for /projects and /blog
-scripts/           check.mjs, the setup wizard, and capture.mjs for these previews
+scripts/           check.mjs, the setup wizard, images.mjs for photographs, and capture.mjs for these previews
 docs/media/        the previews in this README
 ```
 
@@ -274,8 +304,8 @@ each site's own scroll clock frame by frame and writes a WebP, an MP4 and stills
 
 ## Limitations
 
-- Everything is procedural, so a site that depends on photographs needs a different idea. In Editorial and
-  Signal, generated plates stand in for project images.
+- Outside Frame, everything is procedural, and generated plates stand in for project images. Frame needs
+  your own photographs to shine.
 - Claude reviews stills, not playback. A person still has to scroll through it.
 - It generates one site per copy of this project. Keep each site on its own branch.
 

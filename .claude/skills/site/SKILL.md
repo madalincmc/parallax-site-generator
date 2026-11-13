@@ -1,7 +1,7 @@
 ---
 name: site
 description: Generate a complete scroll-driven three.js website from a brief, by planning a shared world and story and then calling the section skills to build and unify every section. Use when the user asks for a whole parallax or immersive scroll site.
-argument-hint: [style=film|editorial|signal] <what the site is for and how it should feel> | --config site.config.json
+argument-hint: [style=film|editorial|signal|frame] <what the site is for and how it should feel> | --config site.config.json
 allowed-tools: Skill, Read, Write, Edit, Glob, Grep, Bash(node scripts/check.mjs:*), PowerShell(node scripts/check.mjs:*)
 ---
 
@@ -20,7 +20,8 @@ in a terminal, or to run `/site` with a description.
 leading `style=<id>` in the line above. With neither, choose from the brief: **Film** for a product,
 place or story that wants one continuous 3D world; **Editorial** for a studio, practice, person or
 publication whose work and words are the point; **Signal** for a technical, bold or nocturnal brand
-that wants to feel live. Say which you chose and why in your report. Then Read
+that wants to feel live; **Frame** when the work is photographs (a photographer, an architect, a
+place or a collection), above all when `public/images/work/` has some. Say which you chose and why in your report. Then Read
 `.claude/skills/site/styles/<style>.md`. Its defaults are what `"auto"` means below, and its
 description of each section is what you pass to the section skills.
 
@@ -33,8 +34,11 @@ answer wins. Where a value is `"auto"`, it's yours to decide as this skill descr
 - **`sections`:** build exactly these skills with exactly these slugs, in exactly this order. Don't
   add, drop, merge or reorder any. Your review may change what's in them, not which ones exist.
 - **`style`:** write it to `brief.style`. It's never `"auto"`.
+- **`images`:** if set, the user's photographs are already in `public/images/work/` with a
+  `manifest.json`. Look at every one before planning, as the Frame guide describes. They're the
+  only photographs you may use. Report any you left out and why.
 - **`thread`:** `"object"` or `"journey"` selects the structure in step 1. Editorial and Signal
-  always use `"object"`: the specimen and the artifact.
+  always use `"object"`: the specimen and the artifact. Frame has no thread: its photographs carry the page.
 - **`theme`:** `"dark"` and `"light"` hold across the whole page. `"dark-flash"` is dark with exactly one
   light section, set with `tone="light"` and a light `mood`. For a light theme, `--ink` is the dark text
   color and `--ink-on-dark` is a light one, and every `mood` must be light.
@@ -74,7 +78,8 @@ structures, or a mix:
 - **One object:** a hero object stays on screen and transforms across the page.
 - **One journey:** the camera travels through a single landscape with no hard break.
 
-Editorial and Signal always use one object, and their guides describe its role.
+Editorial and Signal always use one object, and their guides describe its role. Frame uses none:
+write `src/site/images.ts` first, and plan which photograph goes where before any section.
 
 **`src/site/theme.css` and `src/site/fonts.ts`:** the palette, and one distinctive heading and body
 font pairing from `next/font/google`, plus a mono as `--font-code` when the style uses labels. Keep the
@@ -86,6 +91,7 @@ the hero first and the closer last, starting from the style's usual order:
 - Film: hero, story, statement, features, proof, closer
 - Editorial: hero, statement, work, process, proof, closer
 - Signal: hero, proof, work, process, faq, closer
+- Frame: hero, statement, gallery, story, carousel, closer
 
 Don't use every skill just because it exists:
 
@@ -100,6 +106,7 @@ Don't use every skill just because it exists:
 | `section-process` | Numbered steps from brief to launch | There's a way of working to explain |
 | `section-proof` | Numbers and quotes | There is something to prove |
 | `section-faq` | Questions as an accordion | Editorial and Signal, before the closer |
+| `section-carousel` | Photographs to swipe or click through, with thumbnails | Frame, or any site with photographs |
 | `section-closer` | Final pull-back and call to action | Always |
 
 Vary the rhythm, so that long pins alternate with short ones, and dark moods with a flash of contrast.

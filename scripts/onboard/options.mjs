@@ -24,20 +24,31 @@ export const STYLES = [
     about: "Dark, with one electric accent. System readouts, live clocks, running marquees, case-study cards and a huge wordmark, around one dramatic 3D artifact.",
     sections: ["section-hero", "section-proof", "section-work", "section-process", "section-faq", "section-closer"],
   },
+  {
+    id: "frame",
+    name: "Frame",
+    tagline: "Every picture, from a glimpse to the full screen",
+    about: "For your photographs. Pictures start small, as a card or a tile, and grow until they fill the screen, with numbered full-screen runs, carousels and mist between chapters.",
+    sections: ["section-hero", "section-statement", "section-gallery", "section-story", "section-carousel", "section-closer"],
+    photos: true,
+  },
 ];
 
 // `styles` limits a section to some styles (all when absent). `aboutBy` rewords it for a style.
 export const SECTIONS = [
-  { skill: "section-hero", slug: "hero", name: "Opening", about: "The name, a striking first image and the first scroll reveal.", required: "first" },
+  { skill: "section-hero", slug: "hero", name: "Opening", about: "The name, a striking first image and the first scroll reveal.", required: "first",
+    aboutBy: { frame: "Your strongest photograph full screen, shrinking into a framed card as you scroll." } },
   { skill: "section-story", slug: "story", name: "Story", about: "A long pinned sequence where the subject changes as you scroll. The main event.", repeat: 2,
-    aboutBy: { editorial: "One pinned case study, told in a few beats while the object changes.", signal: "A pinned sequence where the artifact is scanned, opened or rebuilt." } },
+    aboutBy: { editorial: "One pinned case study, told in a few beats while the object changes.", signal: "A pinned sequence where the artifact is scanned, opened or rebuilt.", frame: "A numbered run of full-screen photographs, each wiping over the last." } },
   { skill: "section-statement", slug: "statement", name: "Statement", about: "One huge line of type with 3D moving through it. A change of pace.",
-    aboutBy: { editorial: "A manifesto paragraph set large, with a few words picked out." } },
+    aboutBy: { editorial: "A manifesto paragraph set large, with a few words picked out.", frame: "One sentence with a small photo inside it, and photos floating around it." } },
   { skill: "section-features", slug: "features", name: "Features", about: "Cards or a sticky list that explain concrete details.",
     aboutBy: { editorial: "Services or capabilities, as a numbered list by category.", signal: "Services or capabilities, as numbered cells in a bordered grid." } },
   { skill: "section-work", slug: "work", name: "Work", about: "An index of projects or case studies, with tags and generated covers.", styles: ["editorial", "signal"] },
   { skill: "section-process", slug: "process", name: "Process", about: "How you work, as numbered steps from brief to launch." },
-  { skill: "section-gallery", slug: "gallery", name: "Gallery", about: "A sideways run of 3D plates, for variants, places or works. Generated, not photographs." },
+  { skill: "section-gallery", slug: "gallery", name: "Gallery", about: "A sideways run of 3D plates, for variants, places or works. Generated, not photographs.",
+    aboutBy: { frame: "The reveal: a small photo in the middle of giant type grows to fill the screen." } },
+  { skill: "section-carousel", slug: "carousel", name: "Carousel", about: "Photographs to swipe or click through, with a counter and thumbnails.", styles: ["frame"] },
   { skill: "section-proof", slug: "proof", name: "Proof", about: "Large numbers and quotes. Real businesses get placeholders to fill in.",
     aboutBy: { signal: "Client names in a running marquee, then large numbers. Real businesses get placeholders." } },
   { skill: "section-faq", slug: "faq", name: "Questions", about: "Common questions with short answers, opening one at a time.", styles: ["editorial", "signal"] },
@@ -62,6 +73,9 @@ export const PALETTES = [
   { id: "mist", name: "Mist and signal red", bg: "#edf2f9", ink: "#0f141b", muted: "#5b6573", accent: "#e01b24", suits: ["editorial"] },
   { id: "carbon", name: "Carbon and acid", bg: "#121212", ink: "#f2f4f5", muted: "#8f949a", accent: "#d5fe00", suits: ["signal"] },
   { id: "terminal", name: "Ink and phosphor", bg: "#0b0f0e", ink: "#e6efe9", muted: "#7f8f88", accent: "#2dc656", suits: ["signal"] },
+  { id: "linen", name: "Linen and umber", bg: "#ede6d6", ink: "#2a2725", muted: "#7a7166", accent: "#8a5a3c", suits: ["frame"] },
+  { id: "gallery", name: "Gallery white", bg: "#f4f3f0", ink: "#151515", muted: "#6e6c68", accent: "#151515", suits: ["frame"] },
+  { id: "darkroom", name: "Darkroom", bg: "#121110", ink: "#ece6dc", muted: "#8f877c", accent: "#c8a97e", suits: ["frame"] },
 ];
 
 // Every name here is in next/font's list. The server checks custom names against the same list.
@@ -74,7 +88,8 @@ export const FONTS = [
   { id: "round", name: "Bold and round", heading: "Unbounded", body: "Manrope" },
   { id: "plex", name: "Engineered", heading: "IBM Plex Serif", body: "IBM Plex Sans" },
   { id: "poster", name: "Poster", heading: "Anton", body: "Work Sans" },
-  { id: "studio", name: "Studio serif", heading: "Instrument Serif", body: "Inter Tight", suits: ["editorial"] },
+  { id: "studio", name: "Studio serif", heading: "Instrument Serif", body: "Inter Tight", suits: ["editorial", "frame"] },
+  { id: "salon", name: "Salon", heading: "Cormorant Garamond", body: "DM Sans", suits: ["frame"] },
   { id: "journal", name: "Journal", heading: "Newsreader", body: "Geist", suits: ["editorial"] },
   { id: "hud", name: "Instrument", heading: "Rajdhani", body: "Inter", suits: ["signal"] },
   { id: "console", name: "Console", heading: "Chakra Petch", body: "Inter Tight", suits: ["signal"] },

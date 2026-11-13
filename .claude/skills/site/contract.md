@@ -2,7 +2,8 @@
 
 Every section skill follows this. Claude is the only AI here, and everything on screen comes from
 code: no image or video models, API keys, downloads or external assets. The check fails on any
-request off the site.
+request off the site. The one exception is the owner's own photographs in `public/images/work/`,
+for the Frame style (and any style whose answers provide them): use only those, never others.
 
 ## How the site works
 
@@ -13,7 +14,7 @@ and the mood from the last pose of one act to the first pose of the next. There 
 continuity depends on acts leaving and arriving in compatible places.
 
 Read `src/site/brief.ts` first, then the style guide for `brief.style` in
-`.claude/skills/site/styles/` (`film.md`, `editorial.md` or `signal.md`), then the comment at the top
+`.claude/skills/site/styles/` (`film.md`, `editorial.md`, `signal.md` or `frame.md`), then the comment at the top
 of `src/site/world.ts`, which assigns each act its place in the world. Never start a new visual idea: advance `brief.story`. If the skill's
 arguments carry instructions from the user's setup answers, they take priority over this file's
 suggestions.
@@ -75,6 +76,11 @@ export default function Example() {
   for anything that would be an image on another site. The same seed always draws the same plate.
   Kinds are `ridges`, `orbits`, `horizon`, `halftone`, `spectrum`, `stack` and `glyph` (a huge
   `mark`). Or pass your own SVG as children. Read `src/stage/plate.tsx`.
+- Photographs, from `@/stage/frames`: `Expand` (a photo growing from a small frame to the full
+  screen, or back), `Sequence` (a pinned run of full-screen photos), `Carousel` (swipeable, with
+  buttons and thumbnails), `Scatter`, `InlinePhoto`, `Mist` (a cloud bank between chapters) and
+  `Photo`. They take a `Picture` (`src`, `width`, `height`, `alt`) from `src/site/images.ts`. Every
+  photo needs a real `alt`. Read `src/stage/frames.tsx` and the Frame guide before using them.
 - **CSS variables:** the section sets `--p` (0..1) and each beat sets `--q` (0..1), usable anywhere
   inside, for example `style={{ transform: "translateX(calc(var(--p) * -60%))" }}`. Scroll-linked
   motion goes through these. In a `flow` section, `--p` runs 0..1 over the section's height. Don't add a scroll listener, GSAP or a second animation loop: there is
@@ -89,7 +95,7 @@ export default function Example() {
   - **Gap:** huge words or digits to each side, with the subject between them
   - **Spec:** large figures in a row with small labels
   - **Diagonal:** two pieces of text in opposite corners, with the subject in the middle
-- The chapter menu (a pill in Film, a full-width bar in Editorial and Signal) sits in the band above
+- The chapter menu (a pill in Film, a full-width bar in Editorial, Signal and Frame) sits in the band above
   the beats' top padding, so keep pinned text out of it.
 - A pinned section scrolls away for one screen before the next one arrives, and text still showing rides
   up through the menu. End a section's last beat at about `to={0.95}`, except on the page's final section.

@@ -1,28 +1,28 @@
 # Site styles
 
-> Three ways to build a scroll-driven three.js site from one brief: same engine, same rules, very different pages.
+> Four ways to build a scroll-driven site from one brief: same engine, same rules, very different pages.
 
-Every site this project generates has one **style**. The style is decided before anything else, because
+Every site this project generates has one **style**: Film, Editorial, Signal or Frame. The style is decided before anything else, because
 it sets how the whole site is built: its layout, its menu and preloader, its type system, how much of
 the page is pinned, and what job the 3D does. Colors, fonts and sections come afterwards, and the setup
 wizard puts the ones that suit the style first.
 
-| | **Film** | **Editorial** | **Signal** |
-|---|---|---|---|
-| **In one line** | One continuous take | A studio's journal, set on screen | A control room for a brand |
-| **Feels** | Cinematic, immersive | Calm, confident, spacious | Precise, live, a little theatrical |
-| **Ground** | The 3D world itself | Paper | Near-black |
-| **Accent** | Saturated, used in the world | Rare: links, one word, an index number | Electric: whatever is live or current |
-| **Type** | A characterful display face and a plain body | Serif headings, grotesk body, mono labels | Uppercase technical display, neutral body, mono readouts |
-| **The 3D** | A world the camera travels through | A *specimen*: one sculptural object in the margin | An *artifact*: one dramatic object at the center, scanned and opened |
-| **Pinned** | Almost everything | The hero, and at most one case study | The hero, plus one or two dramatic moments |
-| **Flowing** | Only long lists | Almost everything, rising in as it scrolls | Most content sections |
-| **Menu** | A small pill of chapters | A full-width bar with numbered chapters | A HUD bar: status, clocks, chapters, `[042]` |
-| **Preloader** | Name and percentage | The name set huge, with an accent line filling | `STATUS // INITIALIZING` over a giant `000%` |
-| **Covers** | Plates in the 3D world | Flat generated `Plate`s, as a series | Tall, bordered `Plate`s with bracketed indices |
-| **Usual order** | hero, story, statement, features, proof, closer | hero, statement, work, process, proof, closer | hero, proof, work, process, faq, closer |
-| **Default motion** | Balanced | Calm | Balanced or bold |
-| **Best for** | Products, places, journeys, one-idea stories | Studios, practices, people, publications | Technical, bold or nocturnal brands |
+| | **Film** | **Editorial** | **Signal** | **Frame** |
+|---|---|---|---|---|
+| **In one line** | One continuous take | A studio's journal, set on screen | A control room for a brand | Every picture, from a glimpse to the full screen |
+| **Feels** | Cinematic, immersive | Calm, confident, spacious | Precise, live, a little theatrical | Quiet, warm, made for looking |
+| **Ground** | The 3D world itself | Paper | Near-black | Warm linen |
+| **Accent** | Saturated, used in the world | Rare: links, one word, an index number | Electric: whatever is live or current | Barely there: the photographs bring the color |
+| **Type** | A characterful display face and a plain body | Serif headings, grotesk body, mono labels | Uppercase technical display, neutral body, mono readouts | A condensed serif and a tight grotesk |
+| **The 3D** | A world the camera travels through | A *specimen*: one sculptural object in the margin | An *artifact*: one dramatic object at the center, scanned and opened | Just the paper: *your photographs* are the subject |
+| **Pinned** | Almost everything | The hero, and at most one case study | The hero, plus one or two dramatic moments | The big moves: hero, reveal, the numbered run |
+| **Flowing** | Only long lists | Almost everything, rising in as it scrolls | Most content sections | Carousels, work and the footer |
+| **Menu** | A small pill of chapters | A full-width bar with numbered chapters | A HUD bar: status, clocks, chapters, `[042]` | A transparent bar with "Menu ⠿", blended over photos |
+| **Preloader** | Name and percentage | The name set huge, with an accent line filling | `STATUS // INITIALIZING` over a giant `000%` | The name, inside a frame growing toward the full screen |
+| **Covers** | Plates in the 3D world | Flat generated `Plate`s, as a series | Tall, bordered `Plate`s with bracketed indices | The owner's own photographs |
+| **Usual order** | hero, story, statement, features, proof, closer | hero, statement, work, process, proof, closer | hero, proof, work, process, faq, closer | hero, statement, gallery, story, carousel, closer |
+| **Default motion** | Balanced | Calm | Balanced or bold | Calm or balanced |
+| **Best for** | Products, places, journeys, one-idea stories | Studios, practices, people, publications | Technical, bold or nocturnal brands | Photographers, architects, places, collections |
 
 ---
 
@@ -137,12 +137,55 @@ Guide: [`.claude/skills/site/styles/signal.md`](.claude/skills/site/styles/signa
 
 ---
 
+## Frame
+
+**Every picture, from a glimpse to the full screen.** A style for photographs. Pictures arrive small (a
+card, a floating tile, a word-sized frame inside a sentence) and grow until they fill the screen, then
+settle back into galleries and carousels. Between chapters, a bank of mist rolls over everything. Type is
+quiet, the chrome almost invisible, and the 3D steps back to become the paper.
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│ ANA VOSS                                            MENU ⠿  │  ← blended over photos
+│                                                              │
+│  ‹ ANA VOSS   SELECTED WORK   ANA ┌──────┐ SS   SELECTED  ›  │  ← a huge marquee…
+│                                   │ ▣▣▣▣ │                   │
+│                                   └──────┘  ← …and a small   │
+│                                     ↓  photo at its center   │
+│ ┌──────────────────────────────────────────────────────────┐ │
+│ │                                                          │ │  ← that grows until it
+│ │         the full photograph, edge to edge                │ │     fills the screen
+│ │ Villa Mar, 2024                                     01   │ │
+│ └──────────────────────────────────────────────────────────┘ │
+│ ░░▒▒▓▓██ mist rolls up to change chapter ██▓▓▒▒░░            │
+└──────────────────────────────────────────────────────────────┘
+```
+
+- **The photographs:** the owner's own, imported by the setup page (or
+  `node scripts/onboard/images.mjs <folder>`) into `public/images/work/`. They're resized, re-encoded
+  as WebP and stripped of camera data, with a manifest of their sizes. Claude looks at every one, writes
+  its alt text, and plans which picture goes where before building anything.
+- **The moves:** `Expand` (a photo growing from any frame to the full screen, or shrinking back),
+  `Sequence` (a numbered run of full-screen photos wiping over each other), `Carousel` (swipe, arrows,
+  counter and thumbnails, working without JavaScript), `Scatter`, `InlinePhoto` and `Mist`. All of
+  them are driven by the scroll clock through CSS, with no animation library.
+- **Without photographs,** it falls back to generated covers, and says so.
+- **Borrowed from:** residence and portfolio sites like [Still / Form](https://stillform.homes/): the
+  hero shrinking into a card, the photo inside a sentence, the marquee that opens into a full-screen
+  picture, the numbered run, the carousels and the cloud transitions. Only the craft is borrowed, never
+  the content.
+
+Guide: [`.claude/skills/site/styles/frame.md`](.claude/skills/site/styles/frame.md)
+
+---
+
 ## Choosing a style
 
 ```
 Is the 3D the point: a product to take apart, a place to travel through?
  ├─ yes ──────────────────────────────────────────────────────────▶  Film
  └─ no: the work and the words are the point
+       ├─ the work is photographs ────────────────────────────────▶  Frame
        ├─ calm, crafted, made to be read ─────────────────────────▶  Editorial
        └─ bold, technical, should feel switched on ───────────────▶  Signal
 ```
@@ -152,6 +195,7 @@ In the wizard, pick it on step 2. From the command line:
 ```bash
 npm run site -- --style editorial "a portfolio for a small ceramics studio"
 npm run site -- --style signal "an independent AI lab in Cluj, precise and a little dramatic"
+npm run site -- --style frame --images ~/Pictures/portfolio "an architectural photographer in Cluj"
 npm run site -- "a site for a fictional mechanical watch"   # Claude picks; usually Film
 ```
 
@@ -173,6 +217,11 @@ text, so all of them fall back to a plain readable page with no JavaScript or wi
 | `Marquee` | An endless row; a wrapped list without motion | Signal |
 | `LocalTime` | The time now in a city | Signal |
 | `Plate` | Generated SVG cover art in the site's colors | Editorial, Signal |
+| `Expand` | A photo growing from a small frame to the full screen, or back | Frame |
+| `Sequence` | A pinned, numbered run of full-screen photos | Frame |
+| `Carousel` | Photos to swipe or click through, with thumbnails | Frame |
+| `Scatter` · `InlinePhoto` | Floating photo tiles, and a photo inside a sentence | Frame |
+| `Mist` | A cloud bank drawn from SVG noise, between chapters | Frame |
 
 `Plate` draws seven kinds of cover from a seed, and the same seed always gives the same plate:
 
@@ -193,7 +242,8 @@ Styles change the design rules, never the engine's invariants:
 - One canvas, one scene, one camera, one `requestAnimationFrame`.
 - The look depends only on scroll, time and the pointer, so scrolling back undoes everything.
 - The page works with no JavaScript, with reduced motion and without WebGL.
-- No API keys, image models or downloaded assets. Every cover, object and world is code.
+- No API keys, image models or downloaded assets. Every cover, object and world is code. The one
+  exception is the owner's own photographs, for Frame.
 - No invented facts for a real project. Readouts, numbers and clocks must be true or placeholders.
 - `npm run check` holds every style to the same frame, weight and readability budgets.
 

@@ -3,7 +3,7 @@
 // Sites made before styles existed have no `brief.style`, and are Film.
 import { brief } from "@/site/brief";
 
-export const SITE_STYLES = ["film", "editorial", "signal"] as const;
+export const SITE_STYLES = ["film", "editorial", "signal", "frame"] as const;
 export type SiteStyle = (typeof SITE_STYLES)[number];
 
 type BriefExtras = {
