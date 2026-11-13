@@ -106,27 +106,48 @@ which a lime scan passes through and the page opens step by step.
 
 ### 🖼️ Frame: *every picture, from a glimpse to the full screen*
 
-For photographs: a photographer's or an architect's portfolio, a place, a collection. Pictures arrive
-small, as a card, a floating tile or a frame inside a sentence, and grow until they fill the screen.
-Then they settle into a numbered run of full-screen photos and swipeable carousels, with a bank of mist
-rolling over each change of chapter. The 3D steps back to become the paper. Your photographs are the
-only images, and everything else is code.
+For photographs: a photographer's or an architect's portfolio, a workshop, a place, a collection.
+Pictures arrive small, as a card, a floating tile or a frame inside a sentence, and grow until they
+fill the screen. Then they settle into a numbered run of full-screen photos and swipeable carousels,
+with a bank of mist rolling over each change of chapter. The 3D steps back to become the paper. The
+owner's photographs are the only images, and everything else, the frames, the mist and the menu, is
+code. Here, **Hardwick**, a custom furniture workshop in Baia Mare, in Romanian, as on its own site.
 
 <table>
   <tr>
-    <td width="50%">
-      <img src="docs/media/frame-test.webp" alt="A Frame test site scrolling: a hero photo shrinks into a card, mist, a numbered run of photos and a carousel">
-      <br><sub>The whole page: hero → card, floating tiles, mist, the numbered run, the carousel · <a href="docs/media/frame-test.mp4">MP4</a></sub>
+    <td width="62%">
+      <a href="https://hardwick-frame-demo.vercel.app"><img src="docs/media/frame-hardwick.webp" alt="The Hardwick demo scrolling: the hero photo shrinks into a card, photos float around a sentence, a kitchen grows out of the marquee, mist, a numbered run of rooms, carousels, the process and the contact card"></a>
     </td>
-    <td width="50%">
-      <img src="docs/media/frame-reveal.webp" alt="The Frame reveal: a small photo in the middle of a marquee grows to fill the screen">
-      <br><sub>The reveal: a small photo inside the marquee grows to the full screen · <a href="docs/media/frame-reveal.mp4">MP4</a></sub>
+    <td width="38%">
+      <img src="docs/media/frame-hardwick-2.webp" alt="A small kitchen photo in the middle of a huge marquee of the name">
+      <img src="docs/media/frame-hardwick-3.webp" alt="The numbered run: a full-screen office photo with its caption, index and progress line">
+    </td>
+  </tr>
+  <tr>
+    <td width="62%">
+      <img src="docs/media/frame-hardwick-reveal.webp" alt="The reveal: the small kitchen photo grows from the middle of the marquee to the full screen">
+      <br><sub>The reveal, slowed down: a glimpse inside the type grows to the full screen · <a href="docs/media/frame-hardwick-reveal.mp4">MP4</a></sub>
+    </td>
+    <td width="38%">
+      <img src="docs/media/frame-hardwick-4.webp" alt="A carousel of living rooms with arrows, a counter and thumbnails">
+      <br><sub>Carousels: swipe, arrows, a counter and thumbnails, working without JavaScript</sub>
     </td>
   </tr>
 </table>
 
-<sub>A test site for a fictional architectural photographer, with test photographs from <a href="https://unsplash.com">Unsplash</a>.
-Inspired by residence sites like <a href="https://stillform.homes/">Still / Form</a>.</sub>
+<sub>Inspired by residence sites like <a href="https://stillform.homes/">Still / Form</a>. Photographs from hardwick.ro.
+&nbsp;<a href="https://hardwick-frame-demo.vercel.app"><b>Live</b></a> · <a href="docs/media/frame-hardwick.mp4">MP4</a></sub>
+
+**What makes it Frame:**
+
+- `Expand`: any photo grows from a small frame anywhere on screen to the full screen, or shrinks back
+  into a card, with phones getting a frame of their own.
+- `Sequence`: a pinned, numbered run of full-screen photos, each wiping up over the last, with a
+  counter, a progress line and dots.
+- `Carousel`, `Scatter`, `InlinePhoto` and `Mist` (a cloud bank drawn from SVG noise, not an image).
+- Your photos go in through the setup page, or `--images <folder>`: copied, resized to WebP, stripped
+  of camera data, and looked at by Claude before it writes a word, so every one gets real alt text and
+  a deliberate place.
 
 | | 🎬 Film | 📰 Editorial | 📡 Signal | 🖼️ Frame |
 |---|---|---|---|---|
@@ -140,6 +161,17 @@ Inspired by residence sites like <a href="https://stillform.homes/">Still / Form
 > The same person, Madalin, in three of the styles: the [balloon flight](https://cotetiu-madalin-parallax-portfolio.vercel.app),
 > the [journal](https://madalin-cotetiu-editorial-portfolio.vercel.app) and the [control room](https://madalin-cotetiu-signal-portfolio.vercel.app).
 > Same facts and projects, three completely different sites.
+
+### Made with it
+
+| Site | Style | What it is | Live |
+|---|---|---|---|
+| Madalin Cotetiu | 🎬 Film | An engineering manager's career as one hot air balloon flight across a day | [Open](https://cotetiu-madalin-parallax-portfolio.vercel.app) |
+| Zsolt Norbert Kiss | 🎬 Film | An IP protection engineer as a lifting session, loaded plate by plate | [Open](https://zsolt-kiss-portfolio.vercel.app) |
+| Ionuț Ghiț | 🎬 Film | An ecommerce founder as a night match under stadium lights, in Romanian | [Open](https://ionut-ghit-portfolio.vercel.app) |
+| Madalin Cotetiu | 📰 Editorial | The same career as a studio journal, with steel gauge blocks in the margin | [Open](https://madalin-cotetiu-editorial-portfolio.vercel.app) |
+| Madalin Cotetiu | 📡 Signal | The same career as a control room around an obsidian artifact | [Open](https://madalin-cotetiu-signal-portfolio.vercel.app) |
+| Hardwick | 🖼️ Frame | A custom furniture workshop in Baia Mare, in photographs, in Romanian (a demo) | [Open](https://hardwick-frame-demo.vercel.app) |
 
 ---
 
@@ -177,6 +209,7 @@ Answering the setup page is free. Generating draws on your Claude Code usage, wi
 | Madalin, first site | Film | 7 | ~24 min | 5.4 M |
 | Madalin | Editorial | 6 | ~10 min | 3.2 M |
 | Madalin | Signal | 6 | ~13 min | 4.0 M |
+| Hardwick | Frame | 7 | ~4 min, then finished by hand (the run hit the account's usage limit) | 2.4 M |
 
 ---
 
@@ -307,7 +340,9 @@ each site's own scroll clock frame by frame and writes a WebP, an MP4 and stills
 - Outside Frame, everything is procedural, and generated plates stand in for project images. Frame needs
   your own photographs to shine.
 - Claude reviews stills, not playback. A person still has to scroll through it.
-- It generates one site per copy of this project. Keep each site on its own branch.
+- It generates one site per copy of this project. Keep each site on its own branch. On `main`, `src/site` and
+  `src/sections` hold Madalin's Film portfolio, as the working example; the other sites above live on their own
+  branches and repos.
 
 <div align="center">
 <br>
