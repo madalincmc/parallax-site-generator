@@ -26,6 +26,8 @@ for `/projects` and `/blog`. The 3D home page and generated sections still use n
 - `src/app/(pages)/`: those plain pages. They have no canvas and no three.js
 - `public/images/`: the screenshots and diagrams those pages show
 - `scripts/check.mjs`: builds the site, checks budgets and fallbacks, and writes sheets to `checks/`
+- `scripts/capture.mjs`: records a live site scroll-through (WebP, MP4, stills) into `docs/media/` for the README.
+  `docs/` is in `.vercelignore`, so the media never ships with a deploy
 - `scripts/onboard/`: the setup wizard. `server.mjs` runs it and starts `/site`, `page.html` is its page,
   `options.mjs` lists its choices, `repo.mjs` reads a public repo into a digest, `prepare.mjs` archives the
   current site, and `starter/` is what a new site starts from
