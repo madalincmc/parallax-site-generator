@@ -7,8 +7,10 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node scripts/check.mjs:*), Po
 
 Build this section: **$ARGUMENTS**
 
-Read `.claude/skills/site/contract.md`, then `src/site/brief.ts` and the map at the top of
-`src/site/world.ts`, and follow the contract throughout. If the section exists, revise it.
+Read `.claude/skills/site/contract.md`, then `src/site/brief.ts`, the style guide it names in
+`.claude/skills/site/styles/`, and the map at the top of `src/site/world.ts`. Follow them throughout.
+Where the style guide's table describes this section, its treatment replaces the defaults below. If
+the section exists, revise it.
 
 Default slug `closer`, length about 2.5 to 3. This is the payoff, so it must feel like an arrival.
 

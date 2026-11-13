@@ -1,5 +1,6 @@
 // One-shot entry point:
 //   npm run site -- "a site for a fictional mechanical watch, dark and precise"
+//   npm run site -- --style editorial "a portfolio for a small ceramics studio"
 // Runs the /site skill through the local Claude Code CLI, on your Claude Code login.
 import { spawn } from "node:child_process";
 import { dirname, resolve } from "node:path";
@@ -20,9 +21,13 @@ const ALLOWED_TOOLS = [
   "PowerShell(node scripts/check.mjs:*)",
 ];
 
-const brief = process.argv.slice(2).join(" ").trim();
-if (!brief) {
-  console.error('Usage: npm run site -- "what the site is for and how it should feel"');
+const STYLES = ["film", "editorial", "signal"];
+const args = process.argv.slice(2);
+const flag = args.indexOf("--style");
+const style = flag === -1 ? "" : args.splice(flag, 2)[1];
+const brief = args.join(" ").trim();
+if (!brief || (flag !== -1 && !STYLES.includes(style))) {
+  console.error(`Usage: npm run site -- [--style ${STYLES.join("|")}] "what the site is for and how it should feel"`);
   process.exit(1);
 }
 
@@ -35,7 +40,7 @@ delete env.ANTHROPIC_AUTH_TOKEN;
 const archived = prepareNewSite();
 if (archived) console.log(`Saved the previous site to ${archived}`);
 
-const claude = spawn("claude", ["-p", `/site ${brief}`, "--allowedTools", ALLOWED_TOOLS.join(",")], {
+const claude = spawn("claude", ["-p", `/site ${style ? `style=${style} ` : ""}${brief}`, "--allowedTools", ALLOWED_TOOLS.join(",")], {
   cwd: ROOT,
   env,
   stdio: ["ignore", "inherit", "inherit"],

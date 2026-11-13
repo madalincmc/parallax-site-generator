@@ -127,12 +127,12 @@ body {
  * above the beats' top padding, on its own solid pill, so it stays clear of pinned text and readable
  * over any 3D or light section.
  */
-.chapters {
+.chapters-pill {
   display: none;
 }
 
 @media (min-width: 900px) {
-  .motion .chapters {
+  .motion .chapters-pill {
     position: fixed;
     top: 1rem;
     right: clamp(1.25rem, 5vw, 5rem);
@@ -157,6 +157,244 @@ body {
 .chapters a:hover,
 .chapters a:focus-visible {
   opacity: 1;
+}
+
+/*
+ * Site styles. The Film style uses the pill above; Editorial and Signal use a full-width bar. With no
+ * JavaScript or reduced motion the bar is an ordinary header at the top of the document.
+ */
+.chrome {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  padding: 0.9rem clamp(1.25rem, 5vw, 5rem);
+  color: var(--ink);
+  font-family: var(--font-code, ui-monospace), ui-monospace, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.motion .chrome {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 40;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+.chrome-name {
+  margin-right: auto;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+
+.chrome-links,
+.chrome-pages,
+.chrome-clocks {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.chrome-index {
+  margin-right: 0.35em;
+  color: var(--accent);
+}
+
+.chrome-editorial {
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+}
+
+.chrome-editorial a[aria-current] {
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 4px;
+}
+
+.chrome-signal {
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.chrome-signal .chrome-name {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.chrome-signal a[aria-current] {
+  color: var(--accent);
+}
+
+.chrome-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.chrome-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.motion .chrome-dot {
+  animation: blink 2.4s ease-in-out infinite;
+}
+
+.chrome-progress {
+  color: var(--muted);
+}
+
+.chrome a {
+  opacity: 0.55;
+  transition: opacity 0.3s ease;
+}
+
+.chrome .chrome-name,
+.chrome a[aria-current],
+.chrome a:hover,
+.chrome a:focus-visible {
+  opacity: 1;
+}
+
+@media (max-width: 899px) {
+  .chrome-links,
+  .chrome-clocks,
+  .chrome-progress {
+    display: none;
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.motion .preloader-editorial {
+  grid-template-columns: 1fr auto;
+  place-items: end start;
+  align-items: end;
+  padding: clamp(1.25rem, 5vw, 5rem);
+}
+
+.motion .preloader-signal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: clamp(1.25rem, 5vw, 5rem);
+}
+
+.preloader-bar {
+  position: absolute;
+  inset: auto 0 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(var(--load, 0));
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+/* Reveal: flow content rising in as it scrolls onto the screen. Plain text without .motion. */
+.motion .reveal {
+  opacity: var(--q, 0);
+  translate: 0 calc((1 - var(--q, 0)) * 2.5rem);
+}
+
+/* Marquee: a wrapped list in the plain document, an endless row with motion. */
+.marquee {
+  --marquee-gap: clamp(2rem, 5vw, 4rem);
+  overflow: clip;
+}
+
+.marquee-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem var(--marquee-gap);
+}
+
+.marquee-group[aria-hidden] {
+  display: none;
+}
+
+.motion .marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--marquee-seconds, 40s) linear infinite;
+}
+
+.motion .marquee-reverse .marquee-track {
+  animation-direction: reverse;
+}
+
+.motion .marquee-group {
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+  padding-right: var(--marquee-gap);
+  white-space: nowrap;
+}
+
+.motion .marquee-group[aria-hidden] {
+  display: flex;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Plate: generated cover art, in the page's own colors. */
+.plate {
+  --plate-bg: color-mix(in srgb, var(--ink) 5%, var(--bg));
+  --plate-ink: color-mix(in srgb, var(--ink) 78%, var(--bg));
+  --plate-shade: color-mix(in srgb, var(--ink) 16%, var(--bg));
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+}
+
+.plate-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transition: scale 0.9s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.motion .plate-art {
+  scale: 1.06;
+  translate: 0 calc((0.5 - var(--p, 0.5)) * 4%);
+}
+
+.motion :is(a, .plate):hover .plate-art {
+  scale: 1.12;
+}
+
+/* LocalTime: the city always, the time only once the clock can keep it current. */
+.local-time-value {
+  display: none;
+}
+
+.js .local-time-value {
+  display: inline;
+}
+
+.count {
+  font-variant-numeric: tabular-nums;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
 }
 
 /* Markdown on the project and blog pages. */

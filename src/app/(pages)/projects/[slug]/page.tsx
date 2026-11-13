@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return project ? { title: `${project.title} | ${brief.name}`, description: project.description } : {};
 }
 
-const LINK = "rounded-full border border-white/20 px-4 py-2 text-sm hover:border-white/60 transition-colors";
+const LINK = "rounded-full border border-ink/20 px-4 py-2 text-sm hover:border-ink/60 transition-colors";
 
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params;
@@ -67,7 +67,7 @@ export default async function ProjectPage({ params }: Props) {
           sizes="(min-width: 1024px) 960px, 100vw"
           loading="eager"
           fetchPriority="high"
-          className="mt-10 h-auto w-full rounded-lg border border-white/10"
+          className="mt-10 h-auto w-full rounded-lg border border-ink/10"
         />
       )}
       <div className="prose mt-12" dangerouslySetInnerHTML={{ __html: toHtml(project.body) }} />
@@ -81,7 +81,7 @@ export default async function ProjectPage({ params }: Props) {
                 height={picture.height}
                 alt={picture.alt ?? ""}
                 sizes="(min-width: 768px) 472px, 100vw"
-                className="h-auto w-full rounded-lg border border-white/10"
+                className="h-auto w-full rounded-lg border border-ink/10"
               />
               <figcaption className="text-muted mt-2 text-sm leading-snug">{picture.alt}</figcaption>
             </figure>
@@ -91,14 +91,14 @@ export default async function ProjectPage({ params }: Props) {
       {project.technologies.length > 0 && (
         <ul className="text-muted mt-12 flex max-w-[44rem] flex-wrap gap-2 font-mono text-xs" aria-label="Technologies">
           {project.technologies.map((technology) => (
-            <li key={technology} className="rounded border border-white/10 px-2 py-1">
+            <li key={technology} className="rounded border border-ink/10 px-2 py-1">
               {technology}
             </li>
           ))}
         </ul>
       )}
       {next.slug !== slug && (
-        <Link href={`/projects/${next.slug}`} className="group mt-16 block border-t border-white/10 pt-6">
+        <Link href={`/projects/${next.slug}`} className="group mt-16 block border-t border-ink/10 pt-6">
           <p className="text-muted font-mono text-xs tracking-widest uppercase">Next project</p>
           <p className="font-display mt-2 text-3xl font-bold tracking-tight underline-offset-4 group-hover:underline">
             {next.title} →

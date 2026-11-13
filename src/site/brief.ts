@@ -5,6 +5,8 @@ export const brief = {
   description:
     "Engineering manager at Cognizant, with a background in testing. I lead teams, I'm interested in AI, and I build side projects around problems I run into.",
   lang: "en",
+  // The site style: "film", "editorial" or "signal". See .claude/skills/site/styles/.
+  style: "film",
   themeColor: "#17122e",
   // "real" or "fictional". For a real project, section skills never invent facts.
   kind: "real",

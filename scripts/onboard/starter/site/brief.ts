@@ -4,6 +4,8 @@ export const brief = {
   title: "Starter: a scroll-driven three.js site",
   description: "The reference site for the section skills.",
   lang: "en",
+  // The site style: "film", "editorial" or "signal". See .claude/skills/site/styles/.
+  style: "film",
   themeColor: "#07090f",
   // "real" or "fictional". For a real project, section skills never invent facts.
   kind: "fictional",

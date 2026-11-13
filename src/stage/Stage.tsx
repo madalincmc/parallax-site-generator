@@ -32,9 +32,12 @@ export function Stage() {
 
     const ready = () => root.classList.add("ready");
     const limit = window.setTimeout(ready, PRELOADER_LIMIT_MS);
+    const preloader = document.querySelector<HTMLElement>(".preloader");
     const counter = document.querySelector<HTMLElement>("[data-preloader-count]");
+    const digits = Number(counter?.dataset.preloaderCount) || 0; // "3" shows 000% to 100%
     const onProgress = (share: number) => {
-      if (counter) counter.textContent = `${Math.round(share * 100)}%`;
+      if (counter) counter.textContent = `${String(Math.round(share * 100)).padStart(digits, "0")}%`;
+      preloader?.style.setProperty("--load", share.toFixed(3));
     };
     window.__stage = { clock, engine: () => engine, failure: () => failure };
 

@@ -47,7 +47,10 @@ function validate(answers) {
   const about = text(answers.about, 2000);
   if (!name || !about) throw new Error("The project needs a name and a description.");
 
-  const catalog = new Map(options.SECTIONS.map((section) => [section.skill, section]));
+  const style = pick(answers.style, options.STYLES, "film");
+  const catalog = new Map(
+    options.SECTIONS.filter((section) => !section.styles || section.styles.includes(style)).map((section) => [section.skill, section]),
+  );
   const counts = new Map();
   const sections = (Array.isArray(answers.sections) ? answers.sections : []).flatMap((skill) => {
     const section = catalog.get(skill);
@@ -100,12 +103,14 @@ function validate(answers) {
     kind: answers.kind === "fictional" ? "fictional" : "real",
     facts: text(answers.facts, 4000),
     subject: text(answers.subject, 1000),
-    thread: pick(answers.thread, options.THREADS, "auto"),
+    style,
+    // Editorial and Signal always carry one object (the specimen, the artifact) through the page.
+    thread: style === "film" ? pick(answers.thread, options.THREADS, "auto") : "object",
     sections,
     theme: pick(answers.theme, options.THEMES, "auto"),
     palette,
     fonts,
-    style: pick(answers.style, options.STYLES, "auto"),
+    look: pick(answers.look, options.LOOKS, "auto"),
     motion: pick(answers.motion, options.MOTIONS, "balanced"),
     length: pick(answers.length, options.LENGTHS, "standard"),
     avoid: text(answers.avoid, 1000),

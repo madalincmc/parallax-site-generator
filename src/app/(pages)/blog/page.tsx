@@ -17,9 +17,9 @@ export default function BlogPage() {
       <TerminalBar path="~/portfolio/blog" command="ls --newest-first" />
       <h1 className="font-display mt-10 text-[clamp(3rem,8vw,6rem)] leading-none font-bold tracking-tight">Blog</h1>
       <p className="text-muted mt-4 max-w-xl leading-relaxed">Notes on engineering, testing and building products.</p>
-      <ul className="mt-12 border-b border-white/10">
+      <ul className="mt-12 border-b border-ink/10">
         {posts.map((post) => (
-          <li key={post.slug} className="border-t border-white/10">
+          <li key={post.slug} className="border-t border-ink/10">
             <Link href={`/blog/${post.slug}`} className="group grid gap-2 py-6 md:grid-cols-[8rem_1fr_13rem] md:gap-8">
               <time dateTime={post.date.toISOString()} className="text-muted font-mono text-xs md:pt-2">
                 {formatDate(post.date)}
@@ -40,7 +40,7 @@ export default function BlogPage() {
                   height={post.cover.height}
                   alt=""
                   sizes="(min-width: 768px) 208px, 100vw"
-                  className="h-auto w-full rounded border border-white/10 md:mt-1"
+                  className="h-auto w-full rounded border border-ink/10 md:mt-1"
                 />
               )}
             </Link>

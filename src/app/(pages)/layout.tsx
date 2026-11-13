@@ -9,7 +9,7 @@ const NAV = "hover:text-ink transition-colors";
 export default function PagesLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-svh flex-col">
-      <header className="bg-bg/90 sticky top-0 z-40 border-b border-white/10 backdrop-blur-xl">
+      <header className="bg-bg/90 sticky top-0 z-40 border-b border-ink/10 backdrop-blur-xl">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-5 py-4 md:px-8">
           <a href="/" className="font-display text-base font-bold tracking-tight">
             {brief.name}
@@ -28,7 +28,7 @@ export default function PagesLayout({ children }: { children: React.ReactNode })
         </div>
       </header>
       <main className="mx-auto w-full max-w-5xl flex-1 px-5 py-12 md:px-8 md:py-20">{children}</main>
-      <footer className="border-t border-white/10">
+      <footer className="border-t border-ink/10">
         <div className="text-muted mx-auto flex max-w-5xl flex-wrap justify-between gap-x-6 gap-y-2 px-5 py-6 text-xs md:px-8">
           <p>{brief.name}</p>
           <a href="/" className={NAV}>

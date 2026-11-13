@@ -2,6 +2,7 @@
 // real text and data attributes, and `clock.ts` moves them. With no JavaScript or with reduced
 // motion, the same markup falls back to an ordinary readable page.
 import { Fragment, type CSSProperties, type ReactNode } from "react";
+import { brief } from "@/site/brief";
 
 type StyleWithVars = CSSProperties & Record<`--${string}`, string | number>;
 
@@ -69,6 +70,73 @@ export function Words({ text, className = "" }: { text: string; className?: stri
           </span>{" "}
         </Fragment>
       ))}
+    </span>
+  );
+}
+
+/**
+ * Content in a `flow` section that rises in as it scrolls onto the screen, and sinks back if you
+ * scroll up. Sets `--q`, 0..1, like a Beat, so `Words` inside it rise word by word. `order` staggers
+ * neighbors: 0, 1, 2... Don't use it inside a pinned section; use a Beat there.
+ */
+export function Reveal(props: { order?: number; className?: string; children: ReactNode }) {
+  const { order = 0, className = "", children } = props;
+  return (
+    <div data-reveal={order} className={`reveal ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+/**
+ * A number that counts up as its Beat or Reveal arrives. The page's markup holds the final value,
+ * so it reads correctly with no JavaScript. Pass the plain number, and any unit as prefix or suffix.
+ */
+export function Count(props: { to: number; decimals?: number; prefix?: string; suffix?: string; className?: string }) {
+  const { to, decimals = 0, prefix = "", suffix = "", className = "" } = props;
+  const format = new Intl.NumberFormat(brief.lang, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  return (
+    <span className={`count ${className}`}>
+      {prefix}
+      <span data-count={to} data-decimals={decimals}>
+        {format.format(to)}
+      </span>
+      {suffix}
+    </span>
+  );
+}
+
+/**
+ * A row that loops sideways forever, for client names, skills or a running line of type. With no
+ * JavaScript or with reduced motion it's a plain wrapped list. `seconds` is one full loop; `reverse`
+ * runs it the other way. It may run off the screen on purpose, so it's marked `data-bleed`.
+ */
+export function Marquee(props: { seconds?: number; reverse?: boolean; className?: string; children: ReactNode }) {
+  const { seconds = 40, reverse = false, className = "", children } = props;
+  return (
+    <div
+      data-bleed=""
+      className={`marquee ${reverse ? "marquee-reverse" : ""} ${className}`}
+      style={{ "--marquee-seconds": `${seconds}s` } as StyleWithVars}
+    >
+      <div className="marquee-track">
+        <div className="marquee-group">{children}</div>
+        <div className="marquee-group" aria-hidden="true" inert>
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** The time now in a city, kept current by the clock. Shows only the city without JavaScript. */
+export function LocalTime(props: { city: string; zone: string; className?: string }) {
+  return (
+    <span className={`local-time ${props.className ?? ""}`}>
+      {props.city}{" "}
+      <span data-time={props.zone} className="local-time-value tabular-nums">
+        --:--
+      </span>
     </span>
   );
 }

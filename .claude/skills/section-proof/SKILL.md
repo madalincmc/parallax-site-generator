@@ -7,8 +7,10 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node scripts/check.mjs:*), Po
 
 Build this section: **$ARGUMENTS**
 
-Read `.claude/skills/site/contract.md`, then `src/site/brief.ts` and the map at the top of
-`src/site/world.ts`, and follow the contract throughout. If the section exists, revise it.
+Read `.claude/skills/site/contract.md`, then `src/site/brief.ts`, the style guide it names in
+`.claude/skills/site/styles/`, and the map at the top of `src/site/world.ts`. Follow them throughout.
+Where the style guide's table describes this section, its treatment replaces the defaults below. If
+the section exists, revise it.
 
 Default slug `proof`, length about 3. Never invent facts for a real business: follow the contract's
 `[placeholder]` rule. For a fictional brand, make the numbers specific and a little surprising, since
@@ -16,8 +18,9 @@ Default slug `proof`, length about 3. Never invent facts for a real business: fo
 
 **Numbers.** One to three, each very large with a small unit and label. Make them feel earned by tying
 them to the 3D, so each number's beat shows what it measures, such as a gauge filling, a ring of
-instanced parts appearing, or a glow line tracing a distance. Use static numbers rising with `Words`,
-which survive without JavaScript, rather than counting digits.
+instanced parts appearing, or a glow line tracing a distance. Static numbers rising with `Words`
+work, and so does `Count`, which counts up as its beat arrives and keeps the final value in the
+markup, so it survives without JavaScript.
 
 **Quotes.** Two to four short ones, in real `blockquote`s with a name and role, specific about one
 thing. Place them at different `Depth` speeds and positions so they slide past each other, and give

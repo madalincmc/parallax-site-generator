@@ -48,7 +48,7 @@ export default async function PostPage({ params }: Props) {
           sizes="(min-width: 1024px) 960px, 100vw"
           loading="eager"
           fetchPriority="high"
-          className="mt-10 h-auto w-full rounded-lg border border-white/10"
+          className="mt-10 h-auto w-full rounded-lg border border-ink/10"
         />
       )}
       <div className="prose mt-12" dangerouslySetInnerHTML={{ __html: toHtml(post.body) }} />

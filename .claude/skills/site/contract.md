@@ -12,10 +12,16 @@ camera. In the one screen of scrolling between two sections, the engine eases th
 and the mood from the last pose of one act to the first pose of the next. There are no cuts, so
 continuity depends on acts leaving and arriving in compatible places.
 
-Read `src/site/brief.ts` first, then the comment at the top of `src/site/world.ts`, which assigns
-each act its place in the world. Never start a new visual idea: advance `brief.story`. If the skill's
+Read `src/site/brief.ts` first, then the style guide for `brief.style` in
+`.claude/skills/site/styles/` (`film.md`, `editorial.md` or `signal.md`), then the comment at the top
+of `src/site/world.ts`, which assigns each act its place in the world. Never start a new visual idea: advance `brief.story`. If the skill's
 arguments carry instructions from the user's setup answers, they take priority over this file's
 suggestions.
+
+**Styles.** Every site has one style. It sets the page's chrome (the engine draws the menu and
+preloader for it), its type system, how much is pinned, and what the 3D does. The style guide wins
+where it differs from this file's suggestions, but never over its rules: one canvas, purity, the
+plain fallback, the budgets and no invented facts hold in every style.
 
 ## Files
 
@@ -57,9 +63,21 @@ export default function Example() {
 - `Depth speed`: literal parallax. It moves `speed` screen-heights over the section, and negative
   moves it the other way.
 - `Words text`: words that rise in as the beat arrives.
+- `Reveal order`: for `flow` sections. Its content rises in as it scrolls onto the screen and sets
+  `--q` like a Beat, so `Words` inside it work. `order` (0, 1, 2...) staggers neighbors. Don't use
+  it inside a pinned section.
+- `Count to decimals prefix suffix`: a number that counts up as its Beat or Reveal arrives. The
+  markup holds the final value.
+- `Marquee seconds reverse`: a row that loops sideways, such as client names. It's a wrapped list
+  without motion and is already marked `data-bleed`.
+- `LocalTime city zone`: the current time in a city, such as `zone="Europe/Bucharest"`.
+- `Plate seed kind ratio mark` from `@/stage/plate`: a generated SVG cover in the site's colors,
+  for anything that would be an image on another site. The same seed always draws the same plate.
+  Kinds are `ridges`, `orbits`, `horizon`, `halftone`, `spectrum`, `stack` and `glyph` (a huge
+  `mark`). Or pass your own SVG as children. Read `src/stage/plate.tsx`.
 - **CSS variables:** the section sets `--p` (0..1) and each beat sets `--q` (0..1), usable anywhere
   inside, for example `style={{ transform: "translateX(calc(var(--p) * -60%))" }}`. Scroll-linked
-  motion goes through these. Don't add a scroll listener, GSAP or a second animation loop: there is
+  motion goes through these. In a `flow` section, `--p` runs 0..1 over the section's height. Don't add a scroll listener, GSAP or a second animation loop: there is
   one clock.
 - **Vary the composition.** Never use the same layout for two beats in a row, across sections too.
   "Heading and paragraph, centered vertically on one side" is the default to avoid. Each beat picks
@@ -71,7 +89,8 @@ export default function Example() {
   - **Gap:** huge words or digits to each side, with the subject between them
   - **Spec:** large figures in a row with small labels
   - **Diagonal:** two pieces of text in opposite corners, with the subject in the middle
-- The chapter menu sits in the band above the beats' top padding, so keep pinned text out of it.
+- The chapter menu (a pill in Film, a full-width bar in Editorial and Signal) sits in the band above
+  the beats' top padding, so keep pinned text out of it.
 - A pinned section scrolls away for one screen before the next one arrives, and text still showing rides
   up through the menu. End a section's last beat at about `to={0.95}`, except on the page's final section.
 - Mark oversized type that bleeds off screen on purpose with `data-bleed` on a wrapper. The check

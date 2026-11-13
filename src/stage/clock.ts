@@ -13,11 +13,50 @@ type Span = {
   depths: Depth[];
   lastP: number;
 };
-type Beat = { el: HTMLElement; from: number; to: number; fade: number; last: number };
+type Beat = { el: HTMLElement; from: number; to: number; fade: number; last: number; counts: Count[] };
+type Reveal = { el: HTMLElement; top: number; order: number; last: number; counts: Count[] };
+type Count = { el: HTMLElement; to: number; format: Intl.NumberFormat; last: string };
+type Time = { el: HTMLElement; format: Intl.DateTimeFormat | null };
 type Depth = { el: HTMLElement; speed: number };
 type Listener = (frame: Frame, now: number) => void;
 
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
+const easeOut = (x: number) => 1 - Math.pow(1 - x, 3);
+const REVEAL_START = 0.92; // a Reveal starts rising when its top passes this far down the screen
+const REVEAL_SPAN = 0.22; // and takes this share of a screen of scrolling to arrive
+const REVEAL_STAGGER = 0.045;
+
+/** Distance from the top of the document, ignoring transforms (which the clock itself sets). */
+function documentTop(el: HTMLElement) {
+  let top = 0;
+  for (let node: HTMLElement | null = el; node; node = node.offsetParent as HTMLElement | null) top += node.offsetTop;
+  return top;
+}
+
+function countsIn(root: HTMLElement, lang: string): Count[] {
+  return [...root.querySelectorAll<HTMLElement>("[data-count]")].map((el) => {
+    const decimals = Number(el.dataset.decimals ?? 0);
+    const format = new Intl.NumberFormat(lang, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    return { el, to: Number(el.dataset.count), format, last: el.textContent ?? "" };
+  });
+}
+
+function paintCounts(counts: Count[], q: number) {
+  for (const count of counts) {
+    const text = count.format.format(count.to * easeOut(q));
+    if (text === count.last) continue;
+    count.last = text;
+    count.el.textContent = text;
+  }
+}
+
+function clockFormat(zone: string, lang: string) {
+  try {
+    return new Intl.DateTimeFormat(lang, { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: zone });
+  } catch {
+    return null; // an unknown time zone keeps its placeholder rather than breaking the page
+  }
+}
 
 export function beatStrength(p: number, from: number, to: number, fade: number) {
   const rise = from <= 0 ? 1 : clamp01((p - from) / fade);
@@ -30,6 +69,11 @@ export function createClock() {
   const lenis = motion ? new Lenis({ autoRaf: false, lerp: 0.1 }) : null;
   const listeners = new Set<Listener>();
   let spans: Span[] = [];
+  let reveals: Reveal[] = [];
+  let times: Time[] = [];
+  let lastTick = 0;
+  const progress = document.querySelector<HTMLElement>("[data-scroll-progress]");
+  const lang = document.documentElement.lang || "en";
   let vh = window.innerHeight;
   let frameId = 0;
   let dirty = true;
@@ -51,7 +95,7 @@ export function createClock() {
         lastP: -1,
         beats: [...el.querySelectorAll<HTMLElement>("[data-beat]")].map((beat) => {
           const [from, to, fade] = beat.dataset.beat!.split(",").map(Number);
-          return { el: beat, from, to, fade, last: -1 };
+          return { el: beat, from, to, fade, last: -1, counts: countsIn(beat, lang) };
         }),
         depths: [...el.querySelectorAll<HTMLElement>("[data-depth]")].map((depth) => ({
           el: depth,
@@ -59,6 +103,18 @@ export function createClock() {
         })),
       };
     });
+    reveals = [...document.querySelectorAll<HTMLElement>("[data-reveal]")].map((el) => ({
+      el,
+      top: documentTop(el),
+      order: Number(el.dataset.reveal) || 0,
+      last: -1,
+      counts: countsIn(el, lang),
+    }));
+    times = [...document.querySelectorAll<HTMLElement>("[data-time]")].map((el) => ({
+      el,
+      format: clockFormat(el.dataset.time!, lang),
+    }));
+    lastTick = 0;
     dirty = true;
   };
 
@@ -101,6 +157,7 @@ export function createClock() {
       beat.el.style.setProperty("--q", q.toFixed(3));
       beat.el.style.transform = `translate3d(0, ${((1 - q) * (rising ? 28 : -28)).toFixed(1)}px, 0)`;
       beat.el.style.visibility = q === 0 ? "hidden" : "visible";
+      paintCounts(beat.counts, q);
     }
     for (const depth of span.depths) {
       const shift = (0.5 - p) * depth.speed * vh;
@@ -116,6 +173,18 @@ export function createClock() {
       if (y + vh < span.top - vh || y > span.end + vh * 2) return;
       paintSection(span, i === frame.a ? frame.pA : i === frame.b ? frame.pB : y < span.top ? 0 : 1);
     });
+    for (const reveal of reveals) {
+      const start = reveal.top - vh * (REVEAL_START - reveal.order * REVEAL_STAGGER);
+      const q = clamp01((frame.y - start) / (vh * REVEAL_SPAN));
+      if (q === reveal.last) continue;
+      reveal.last = q;
+      reveal.el.style.setProperty("--q", q.toFixed(3));
+      paintCounts(reveal.counts, q);
+    }
+    if (progress) {
+      const share = Math.round((frame.y / Math.max(1, document.documentElement.scrollHeight - vh)) * 100);
+      progress.textContent = String(Math.min(100, share)).padStart(3, "0");
+    }
     const current = spans[frame.w > 0.5 ? frame.b : frame.a]?.slug ?? "";
     if (current !== activeNav) {
       activeNav = current;
@@ -137,6 +206,11 @@ export function createClock() {
       paint(frame);
     }
     listeners.forEach((listener) => listener(frame, now));
+    if (times.length && now - lastTick > 1000) {
+      lastTick = now;
+      const date = new Date();
+      for (const time of times) if (time.format) time.el.textContent = time.format.format(date);
+    }
   };
 
   measure();

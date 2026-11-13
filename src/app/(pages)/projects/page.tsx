@@ -20,9 +20,9 @@ export default function ProjectsPage() {
         Projects I&rsquo;ve built outside work. Most start from a problem I ran into myself, not from a technology I wanted
         to try.
       </p>
-      <ul className="mt-12 border-b border-white/10">
+      <ul className="mt-12 border-b border-ink/10">
         {projects.map((project) => (
-          <li key={project.slug} className="border-t border-white/10">
+          <li key={project.slug} className="border-t border-ink/10">
             <Link
               href={`/projects/${project.slug}`}
               className="group grid gap-2 py-6 md:grid-cols-[8rem_1fr_13rem] md:gap-8"
@@ -41,7 +41,7 @@ export default function ProjectsPage() {
                   height={project.cover.height}
                   alt=""
                   sizes="(min-width: 768px) 208px, 100vw"
-                  className="h-auto w-full rounded border border-white/10 md:mt-1"
+                  className="h-auto w-full rounded border border-ink/10 md:mt-1"
                 />
               )}
             </Link>

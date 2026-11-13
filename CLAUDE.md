@@ -13,11 +13,13 @@ for `/projects` and `/blog`. The 3D home page and generated sections still use n
 
 ## Layout
 
-- `.claude/skills/site/`: `/site`, which directs everything, and `contract.md`, which every section
-  skill follows
+- `.claude/skills/site/`: `/site`, which directs everything, `contract.md`, which every section
+  skill follows, and `styles/`, one guide per site style (Film, Editorial, Signal) that every skill reads
 - `.claude/skills/section-*/`: one skill per kind of section
 - `src/stage/`: the shared engine. `clock.ts` owns scrolling and DOM effects, `engine.ts` owns WebGL,
-  `dom.tsx` has the section building blocks, and `kit.ts` the scene helpers
+  `dom.tsx` has the section building blocks, `plate.tsx` the generated cover art, `chrome.tsx` the menu
+  and preloader for each style, `style.ts` reads `brief.style`, and `kit.ts` the scene helpers
+  (`math.ts` holds its pure parts, so server components can use them without three.js)
 - `src/site/`: this site's brief, tokens, fonts, shared world and section order. Generated
 - `src/sections/<slug>/`: `section.tsx` (page content) and `act.ts` (its part of the 3D). Generated
 - `content/`: Markdown for `/projects` and `/blog`, read by `src/lib/content.ts`
@@ -40,6 +42,10 @@ for `/projects` and `/blog`. The 3D home page and generated sections still use n
 - One canvas, one scene, one camera, one requestAnimationFrame. Sections add to these and never start
   their own. That is what makes the page feel continuous.
 - The look depends only on scroll progress, time and the pointer, so scrolling back undoes everything.
+- Styles change the chrome and the design rules, never the engine's invariants. A site with no
+  `brief.style` is Film, so sites on other branches keep building. Adding a style means a guide in
+  `.claude/skills/site/styles/`, an entry in `scripts/onboard/options.mjs` and `SITE_STYLES`, and its
+  chrome in `src/stage/chrome.tsx`.
 - The page works with no JavaScript, reduced motion and no WebGL, because everything pinned or hidden
   is under `.motion`. `scripts/check.mjs` enforces this.
 - three.js loads after first paint, in its own chunk.
